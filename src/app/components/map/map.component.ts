@@ -1,5 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MapInfoWindow, MapMarker, GoogleMap } from '@angular/google-maps'
+import { Observable } from 'rxjs';
+import { Station } from 'src/app/models/station';
+import { MapService } from 'src/app/services/map.service';
 
 @Component({
   selector: 'app-map',
@@ -17,13 +20,15 @@ export class MapComponent implements OnInit {
     zoomControl: false,
     scrollwheel: true,
     disableDoubleClickZoom: true,
-    maxZoom: 15,
+    maxZoom: 17,
     minZoom: 8,
   }
-  markers = [];
+  stations$: Observable<Station[]>;
+
   infoContent = '';
 
-  constructor() { }
+  constructor(private mapService: MapService) {
+  }
 
   ngOnInit(): void {
     navigator.geolocation.getCurrentPosition((position) => {
@@ -32,29 +37,17 @@ export class MapComponent implements OnInit {
         lng: position.coords.longitude,
       }
     });
+    this.stations$ = this.mapService.stations$;
   }
 
   mapClick(event: google.maps.MouseEvent) {
     console.log(event.latLng.toJSON());
-    this.addMarker(event.latLng.toJSON().lat, event.latLng.toJSON().lng);
+    this.addStation(event.latLng.toJSON().lat, event.latLng.toJSON().lng);
   }
 
-  addMarker(lat: number, lng: number) {
-    this.markers.push({
-      position: {
-        lat: lat,
-        lng: lng,
-      },
-      label: {
-        color: 'red',
-        text: 'Marker label ' + (this.markers.length + 1),
-      },
-      title: 'Marker title ' + (this.markers.length + 1),
-      info: 'Marker info ' + (this.markers.length + 1),
-      options: {
-        //animation: google.maps.Animation.BOUNCE,
-      },
-    })
+  addStation(lat: number, lng: number) {
+    const newStation: Station = { name: 'new station', lat: lat, lng: lng }
+    this.mapService.create(newStation);
   }
 
   openInfo(marker: MapMarker, content) {

@@ -9,12 +9,11 @@
 
   <map-marker
     #markerElem
-    *ngFor="let marker of markers"
-    [position]="marker.position"
-    [label]="marker.label"
-    [title]="marker.title"
-    [options]="marker.options"
-    (mapClick)="openInfo(markerElem, marker.info)"
+    *ngFor="let station of stations$ | async"
+    [position]="{lat: station.lat, lng: station.lng}"
+    [label]="station.name"
+    [title]="station.name"
+    (mapClick)="openInfo(markerElem, station.name)"
   >
   </map-marker>
 

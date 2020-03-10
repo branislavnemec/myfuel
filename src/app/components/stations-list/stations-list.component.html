@@ -1,0 +1,12 @@
+<div *ngIf="loading$ | async">
+    Loading...
+</div>
+<div *ngIf="noResults$ | async">
+    No results
+</div>
+<mat-selection-list>
+    <mat-list-option *ngFor="let station of stations$ | async">
+        {{station.name}}
+    </mat-list-option>
+</mat-selection-list>
+  

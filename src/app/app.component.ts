@@ -16,4 +16,12 @@ export class AppComponent implements OnInit {
   ngOnInit() {
   }
 
+  goToMap() {
+    this.router.navigate(['map']);
+  }
+
+  goToStations() {
+    this.router.navigate(['stations']);
+  }
+
 }
