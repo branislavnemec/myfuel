@@ -50,6 +50,16 @@ export abstract class FirestoreService<T> {
         })
     }
 
+    update(id: string, value: T) {
+        return this.collection.doc(id).update(Object.assign({}, { id }, value)).then(_ => {
+            if (!environment.production) {
+                console.groupCollapsed(`Firestore Service [${this.basePath}] [update]`)
+                console.log('[Id]', id, value)
+                console.groupEnd()
+            }
+        })
+    }
+
     delete(id: string) {
         return this.collection.doc(id).delete().then(_ => {
             if (!environment.production) {

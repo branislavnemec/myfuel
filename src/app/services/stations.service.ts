@@ -23,9 +23,7 @@ export class StationsService {
     }
 
     get stations$(): Observable<Station[]> {
-        return this.store.state$.pipe(map(state => state.loading
-            ? []
-            : state.stations));
+        return this.store.state$.pipe(map(state => state.stations));
     }
 
     get loading$(): Observable<boolean> {
@@ -68,7 +66,7 @@ export class StationsService {
     }
 
     delete(id: string): any {
-        this.store.patch({ loading: true, stations: [] }, "station delete");
+        this.store.patch({ loading: true }, "station delete");
         return this.firestore.delete(id).catch(err => {
             this.store.patch({
                 loading: false,

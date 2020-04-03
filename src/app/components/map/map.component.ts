@@ -3,6 +3,8 @@ import { MapInfoWindow, MapMarker, GoogleMap } from '@angular/google-maps'
 import { Observable } from 'rxjs';
 import { Station } from 'src/app/models/station';
 import { MapService } from 'src/app/services/map.service';
+import { MatDialogConfig, MatDialog } from '@angular/material/dialog';
+import { StationEditDialogComponent } from '../station-edit-dialog/station-edit-dialog.component';
 
 @Component({
   selector: 'app-map',
@@ -26,8 +28,10 @@ export class MapComponent implements OnInit {
   stations$: Observable<Station[]>;
 
   infoContent = '';
+  infoContentId = '';
 
-  constructor(private mapService: MapService) {
+  constructor(private mapService: MapService,
+              private dialog: MatDialog) {
   }
 
   ngOnInit(): void {
@@ -40,7 +44,7 @@ export class MapComponent implements OnInit {
     this.stations$ = this.mapService.stations$;
   }
 
-  mapClick(event: google.maps.MouseEvent) {
+  mapDblclick(event: google.maps.MouseEvent) {
     console.log(event.latLng.toJSON());
     this.addStation(event.latLng.toJSON().lat, event.latLng.toJSON().lng);
   }
@@ -50,9 +54,30 @@ export class MapComponent implements OnInit {
     this.mapService.create(newStation);
   }
 
-  openInfo(marker: MapMarker, content) {
-    this.infoContent = content
-    this.mapInfoWindow.open(marker)
+  openInfo(marker: MapMarker, station: Station) {
+    this.infoContentId = station.id;
+    this.infoContent = station.lat.toString();
+    this.mapInfoWindow.open(marker);
   }
+
+  deleteStation() {
+    console.log(this.infoContentId);
+    this.mapService.delete(this.infoContentId);
+  }
+
+  editStation() {
+
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+
+    dialogConfig.data = {
+      id: this.infoContentId
+    };
+
+    this.dialog.open(StationEditDialogComponent, dialogConfig);
+  }
+
 
 }

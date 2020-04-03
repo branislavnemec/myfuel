@@ -18,6 +18,9 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatListModule } from '@angular/material/list';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatTableModule } from '@angular/material/table';
+import { MatDialogModule } from '@angular/material/dialog';
 
 import { AppRoutingModule } from './app-routing.module';
 
@@ -28,12 +31,15 @@ import { MapComponent } from './components/map/map.component';
 import { StationsPageComponent } from './components/stations-page/stations-page.component';
 import { StationsListComponent } from './components/stations-list/stations-list.component';
 import { StationsFormComponent } from './components/stations-form/stations-form.component';
+import { StationEditDialogComponent } from './components/station-edit-dialog/station-edit-dialog.component';
 
 import { StationsService } from './services/stations.service';
 import { StationFirestore } from './services/station.firestore';
 import { StationsPageStore } from './services/stations-page.store';
 import { MapService } from './services/map.service';
 import { MapPageStore } from './services/map-page.store';
+import { StationService } from './services/station.service';
+import { StationEditDialogStore } from './services/station-edit-dialog.store';
 
 
 @NgModule({
@@ -42,7 +48,8 @@ import { MapPageStore } from './services/map-page.store';
     MapComponent,
     StationsPageComponent,
     StationsListComponent,
-    StationsFormComponent
+    StationsFormComponent,
+    StationEditDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -63,15 +70,21 @@ import { MapPageStore } from './services/map-page.store';
     MatAutocompleteModule,
     MatMenuModule,
     MatListModule,
+    MatExpansionModule,
+    MatTableModule,
     ReactiveFormsModule,
+    MatDialogModule
   ],
   providers: [
     StationsService,
     StationFirestore,
     StationsPageStore,
     MapService,
-    MapPageStore
+    MapPageStore,
+    StationService,
+    StationEditDialogStore
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [StationEditDialogComponent]
 })
 export class AppModule { }

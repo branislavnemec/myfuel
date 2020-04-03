@@ -4,7 +4,7 @@
   [zoom]="zoom"
   [center]="center"
   [options]="options"
-  (mapClick)="mapClick($event)"
+  (mapDblclick)="mapDblclick($event)"
 >
 
   <map-marker
@@ -13,10 +13,15 @@
     [position]="{lat: station.lat, lng: station.lng}"
     [label]="station.name"
     [title]="station.name"
-    (mapClick)="openInfo(markerElem, station.name)"
+    (mapClick)="openInfo(markerElem, station)"
   >
   </map-marker>
 
-  <map-info-window>{{ infoContent }}</map-info-window>
+  <map-info-window>
+    {{ infoContentId }}<br>
+    {{ infoContent }}<br>
+    <a (click)="editStation()">edit</a>&nbsp;
+    <a (click)="deleteStation()">delete</a>&nbsp;
+  </map-info-window>
   
 </google-map>

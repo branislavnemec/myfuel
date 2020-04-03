@@ -28,7 +28,6 @@ export class MapService {
 
     create(station: Station) {
         this.store.patch({
-            stations: [],
         }, "station create");
         return this.firestore.create(station).then(_ => {
             this.store.patch({
