@@ -1,16 +1,46 @@
-.example-container {
+.sidenav-container {
     position: absolute;
-    top: 0;
-    bottom: 0;
+    top: 64px;
+    @media (max-width: 599px) {
+      top: 56px;
+    }
+    bottom: 64px;
+    @media (max-width: 599px) {
+      bottom: 56px;
+    }
     left: 0;
     right: 0;
     background: #eee;
 }
 
-.example-spacer {
+.toolbar-spacer {
   flex: 1 1 auto;
 }
 
-.example-content {
+.sidenav-content {
   overflow: hidden;
+}
+
+.toolbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+.sidenav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 999;
+}
+
+.menu-bar {
+  position: fixed;
+  top: calc(100vh - 64px);
+  @media (max-width: 599px) {
+    top: calc(100vh - 56px);
+  }
+  left: 0;
+  right: 0;
 }

@@ -16,7 +16,7 @@ export class MapComponent implements OnInit {
   @ViewChild(MapInfoWindow, { static: false }) mapInfoWindow: MapInfoWindow
 
   zoom = 12;
-  center: google.maps.LatLngLiteral;
+  center: google.maps.LatLngLiteral = {lat: 48.14419022758065, lng: 17.107632924659644};
   options: google.maps.MapOptions = {
     mapTypeId: google.maps.MapTypeId.ROADMAP,
     zoomControl: false,
