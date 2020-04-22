@@ -3,7 +3,7 @@ import { StationFirestore } from './station.firestore';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Station } from '../models/station';
-import { tap, map } from 'rxjs/operators';
+import { tap, map, catchError } from 'rxjs/operators';
 
 @Injectable()
 export class StationService {
@@ -60,13 +60,26 @@ export class StationService {
     }
 
     loadStation(id: string) {
+        this.store.patch({
+            loading: true,
+            formStatus: 'Loading...'
+        }, 'station load');
         return this.firestore.doc$(id).pipe(
             tap(station => {
                 this.store.patch({
-                    station,        
-                }, `station load`);
+                    loading: false,
+                    station,
+                    formStatus: ''       
+                }, 'station load SUCCESS');
+            }),
+            catchError((err) => {
+                this.store.patch({
+                    loading: false,
+                    formStatus: 'An error ocurred'
+                }, 'station load ERROR');
+                throw err;
             })
-            );
+        );
     }
 
 }

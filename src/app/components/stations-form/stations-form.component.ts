@@ -2,6 +2,7 @@ import { StationsService } from './../../services/stations.service';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
+import { Station } from 'src/app/models/station';
 
 @Component({
     selector: 'app-stations-form',
@@ -33,7 +34,13 @@ export class StationsFormComponent implements OnInit {
 
     async submit() {
         this.inputForm.disable();
-        await this.stationsService.create({ ...this.inputForm.value});
+        const newStation: Station = {
+            name: this.inputForm.controls.name.value,
+            lat: Number(this.inputForm.controls.lat.value),
+            lng: Number(this.inputForm.controls.lng.value),
+            position: null
+        }
+        await this.stationsService.create(newStation);
         this.inputForm.reset();
         this.inputForm.enable();
     }

@@ -3,7 +3,7 @@ import { StationFirestore } from './station.firestore';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Station } from '../models/station';
-import { tap, map } from 'rxjs/operators';
+import { tap, map, distinctUntilChanged } from 'rxjs/operators';
 
 @Injectable()
 export class StationsService {
@@ -23,11 +23,17 @@ export class StationsService {
     }
 
     get stations$(): Observable<Station[]> {
-        return this.store.state$.pipe(map(state => state.stations));
+        return this.store.state$.pipe(
+            map(state => state.stations),
+            distinctUntilChanged()
+        );
     }
 
     get loading$(): Observable<boolean> {
-        return this.store.state$.pipe(map(state => state.loading));
+        return this.store.state$.pipe(
+            map(state => state.loading),
+            distinctUntilChanged()
+        );
     }
 
     get noResults$(): Observable<boolean> {
@@ -36,18 +42,21 @@ export class StationsService {
                 return !state.loading
                     && state.stations
                     && state.stations.length === 0
-            })
+            }),
+            distinctUntilChanged()
         );
     }
 
     get formStatus$(): Observable<string> {
-        return this.store.state$.pipe(map(state => state.formStatus));
+        return this.store.state$.pipe(
+            map(state => state.formStatus),
+            distinctUntilChanged()
+        );
     }
 
     create(station: Station) {
         this.store.patch({
             loading: true,
-            stations: [],
             formStatus: 'Saving...'
         }, "station create");
         return this.firestore.create(station).then(_ => {

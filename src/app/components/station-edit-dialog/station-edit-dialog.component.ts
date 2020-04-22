@@ -5,6 +5,8 @@ import { StationService } from 'src/app/services/station.service';
 import { first } from 'rxjs/operators';
 import { Station } from 'src/app/models/station';
 import { Observable } from 'rxjs';
+import * as firebase from 'firebase/app';
+import * as geofirex from 'geofirex';
 
 @Component({
     selector: 'app-station-edit-dialog',
@@ -12,6 +14,8 @@ import { Observable } from 'rxjs';
     styleUrls: ['./station-edit-dialog.component.scss']
 })
 export class StationEditDialogComponent implements OnInit {
+
+    geo: geofirex.GeoFireClient = geofirex.init(firebase);
 
     inputForm: FormGroup = new FormGroup({
         name: new FormControl('', Validators.required),
@@ -42,7 +46,7 @@ export class StationEditDialogComponent implements OnInit {
         );
 
         this.stationService.loadStation(this.stationId).pipe(
-            //first()
+            first()
         ).subscribe();
 
     }
@@ -53,7 +57,15 @@ export class StationEditDialogComponent implements OnInit {
 
     submit() {
         this.inputForm.disable();
-        this.stationService.update({ id: this.stationId, ...this.inputForm.value}).then(
+        const position = this.geo.point(Number(this.inputForm.controls.lat.value), Number(this.inputForm.controls.lng.value));
+        const updatedStation: Station = {
+            id: this.stationId,
+            name: this.inputForm.controls.name.value,
+            lat: Number(this.inputForm.controls.lat.value),
+            lng: Number(this.inputForm.controls.lng.value),
+            position: position
+        }
+        this.stationService.update(updatedStation).then(
             (result) => {
                 console.log('update OK...');
                 this.dialogRef.close();

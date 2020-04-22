@@ -3,17 +3,18 @@ import { AngularFirestore, QueryFn } from "@angular/fire/firestore";
 import { Observable } from "rxjs";
 import { tap } from "rxjs/operators";
 import { environment } from "src/environments/environment";
+import * as firebase from 'firebase/app';
+import * as geofirex from 'geofirex';
 
 @Injectable()
 export abstract class FirestoreService<T> {
 
+    protected geo: geofirex.GeoFireClient = geofirex.init(firebase);
     protected abstract basePath: string;
 
     constructor(
         protected firestore: AngularFirestore,
-    ) {
-
-    }
+    ) {}
 
     doc$(id: string): Observable<T> {
         return this.firestore.doc<T>(`${this.basePath}/${id}`).valueChanges().pipe(
@@ -23,7 +24,7 @@ export abstract class FirestoreService<T> {
                     console.log(r)
                     console.groupEnd()
                 }
-            }),
+            })
         );
     }
 
@@ -35,7 +36,19 @@ export abstract class FirestoreService<T> {
                     console.table(r)
                     console.groupEnd()
                 }
-            }),
+            })
+        );
+    }
+
+    geoCollection$(center: geofirex.FirePoint, radius: number, field: string, opts?: geofirex.GeoQueryOptions): Observable<T[]> {
+        return this.geo.query<T>(`${this.basePath}`).within(center, radius, field, opts).pipe(
+            tap(r => {
+                if (!environment.production) {
+                    console.groupCollapsed(`Firestore Streaming [${this.basePath}] [geoCollection$]`)
+                    console.table(r)
+                    console.groupEnd()
+                }
+            })
         );
     }
 
@@ -71,6 +84,6 @@ export abstract class FirestoreService<T> {
     }
 
     private get collection() {
-        return this.firestore.collection(`${this.basePath}`);
+        return this.firestore.collection<T>(`${this.basePath}`);
     }
 }

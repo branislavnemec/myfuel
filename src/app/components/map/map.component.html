@@ -1,10 +1,10 @@
-<google-map
+<google-map *ngIf="mapCenter$"
   height="100%"
   width="100%"
-  [zoom]="zoom"
-  [center]="center"
+  [zoom]="mapZoom$ | async"
+  [center]="mapCenter$ | async"
   [options]="options"
-  (mapDblclick)="mapDblclick($event)"
+  (mapRightclick)="mapRightclick($event)"
 >
 
   <map-marker
@@ -18,10 +18,11 @@
   </map-marker>
 
   <map-info-window>
-    {{ infoContentId }}<br>
     {{ infoContent }}<br>
     <a (click)="editStation()">edit</a>&nbsp;
     <a (click)="deleteStation()">delete</a>&nbsp;
   </map-info-window>
   
 </google-map>
+
+<img class="map-center-button" (click)="centerMap()" width="41px" height="41px" src="assets/images/map/icon-place-point@2x.png">

@@ -1,0 +1,13 @@
+.map-center-button {
+    position: fixed;
+    bottom: 64px + 20px;
+    left: 10px;
+    color: white;
+    cursor: pointer;
+}
+
+@media (max-width: 599px) {
+    .map-center-button {
+        bottom: 56px + 20px;
+    }
+}

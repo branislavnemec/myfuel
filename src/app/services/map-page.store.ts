@@ -9,7 +9,13 @@ export class MapPageStore extends StoreService<MapPage> {
 
     constructor() {
         super({
-            stations: []
+            stations: [],
+            mapFilter: {
+                range: 5
+            },
+            mapCenter: null,
+            mapZoom: 15,
+            position: null
         });
     }
 }

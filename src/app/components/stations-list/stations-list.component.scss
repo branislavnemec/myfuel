@@ -1,11 +1,14 @@
 .table-container {
   max-height: calc(100vh - 64px - 48px - 16px - 64px - 64px - 20px);
-  @media (max-width: 599px) {
-    max-height: calc(100vh - 56px - 48px - 16px - 64px - 56px - 20px);
-  }
   overflow: auto;
 }
 
 table {
   width: 100%;
+}
+
+@media (max-width: 599px) {
+    .table-container {
+        max-height: calc(100vh - 56px - 48px - 16px - 64px - 56px - 20px);
+    }
 }

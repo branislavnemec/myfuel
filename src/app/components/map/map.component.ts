@@ -5,79 +5,110 @@ import { Station } from 'src/app/models/station';
 import { MapService } from 'src/app/services/map.service';
 import { MatDialogConfig, MatDialog } from '@angular/material/dialog';
 import { StationEditDialogComponent } from '../station-edit-dialog/station-edit-dialog.component';
+import * as firebase from 'firebase/app';
+import * as geofirex from 'geofirex';
+import { MapFilter } from 'src/app/models/map-filter';
+import { GeoUtils } from 'src/app/utils/geo-utils';
+import { first, map } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-map',
-  templateUrl: './map.component.html',
-  styleUrls: ['./map.component.scss']
+    selector: 'app-map',
+    templateUrl: './map.component.html',
+    styleUrls: ['./map.component.scss']
 })
 export class MapComponent implements OnInit {
-  @ViewChild(GoogleMap, { static: false }) googleMap: GoogleMap
-  @ViewChild(MapInfoWindow, { static: false }) mapInfoWindow: MapInfoWindow
 
-  zoom = 12;
-  center: google.maps.LatLngLiteral = {lat: 48.14419022758065, lng: 17.107632924659644};
-  options: google.maps.MapOptions = {
-    mapTypeId: google.maps.MapTypeId.ROADMAP,
-    zoomControl: false,
-    scrollwheel: true,
-    disableDoubleClickZoom: true,
-    maxZoom: 17,
-    minZoom: 8,
-  }
-  stations$: Observable<Station[]>;
+    @ViewChild(GoogleMap, { static: false }) googleMap: GoogleMap;
+    @ViewChild(MapInfoWindow, { static: false }) mapInfoWindow: MapInfoWindow;
 
-  infoContent = '';
-  infoContentId = '';
+    geo: geofirex.GeoFireClient = geofirex.init(firebase);
 
-  constructor(private mapService: MapService,
-              private dialog: MatDialog) {
-  }
+    options: google.maps.MapOptions = {
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        zoomControl: true,
+        scrollwheel: true,
+        disableDoubleClickZoom: true,
+        fullscreenControl: false,
+        streetViewControl: false,
+        scaleControl: true,
+        maxZoom: 17,
+        minZoom: 8,
+    }
 
-  ngOnInit(): void {
-    navigator.geolocation.getCurrentPosition((position) => {
-      this.center = {
-        lat: position.coords.latitude,
-        lng: position.coords.longitude,
-      }
-    });
-    this.stations$ = this.mapService.stations$;
-  }
+    stations$: Observable<Station[]>;
+    mapFilter$: Observable<MapFilter>;
+    mapCenter$: Observable<google.maps.LatLngLiteral>;
+    mapZoom$: Observable<number>;
 
-  mapDblclick(event: google.maps.MouseEvent) {
-    console.log(event.latLng.toJSON());
-    this.addStation(event.latLng.toJSON().lat, event.latLng.toJSON().lng);
-  }
+    infoContent = '';
+    infoContentId = '';
 
-  addStation(lat: number, lng: number) {
-    const newStation: Station = { name: 'new station', lat: lat, lng: lng }
-    this.mapService.create(newStation);
-  }
+    constructor(private mapService: MapService,
+                private dialog: MatDialog) {
+    }
 
-  openInfo(marker: MapMarker, station: Station) {
-    this.infoContentId = station.id;
-    this.infoContent = station.lat.toString();
-    this.mapInfoWindow.open(marker);
-  }
+    ngOnInit(): void {
+        this.mapFilter$ = this.mapService.mapFilter$;
+        this.stations$ = this.mapService.stations$;
+        this.mapCenter$ = this.mapService.mapCenter$;
+        this.mapZoom$ = this.mapService.mapZoom$;
+        this.mapService.mapCenter$.pipe(
+            first()
+        ).subscribe((center) => {
+            if (!center) {
+                navigator.geolocation.getCurrentPosition((position) => {
+                    this.mapService.setPosition({ lat: position.coords.latitude, lng: position.coords.longitude });
+                });
+            }
+        });
+    }
 
-  deleteStation() {
-    console.log(this.infoContentId);
-    this.mapService.delete(this.infoContentId);
-  }
+    ngOnDestroy(): void {
+        this.mapService.setMapCenter(this.googleMap.getCenter().toJSON());
+        this.mapService.setMapZoom(this.googleMap.getZoom());
+    }
 
-  editStation() {
+    mapRightclick(event: google.maps.MouseEvent) {
+        this.addStation(event.latLng.toJSON().lat, event.latLng.toJSON().lng);
+    }
 
-    const dialogConfig = new MatDialogConfig();
+    addStation(lat: number, lng: number) {
+        const position = this.geo.point(lat, lng);
+        const newStation: Station = {
+            name: 'new',
+            lat: lat,
+            lng: lng,
+            position: position
+        };
+        this.mapService.create(newStation);
+    }
 
-    dialogConfig.disableClose = true;
-    dialogConfig.autoFocus = true;
+    openInfo(marker: MapMarker, station: Station) {
+        this.infoContentId = station.id;
+        this.infoContent = station.name;
+        this.mapInfoWindow.open(marker);
+    }
 
-    dialogConfig.data = {
-      id: this.infoContentId
-    };
+    deleteStation() {
+        this.mapService.delete(this.infoContentId);
+    }
 
-    this.dialog.open(StationEditDialogComponent, dialogConfig);
-  }
+    editStation() {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.disableClose = true;
+        dialogConfig.autoFocus = true;
 
+        dialogConfig.data = {
+            id: this.infoContentId
+        };
+
+        this.dialog.open(StationEditDialogComponent, dialogConfig);
+    }
+
+    centerMap() {
+        navigator.geolocation.getCurrentPosition((position) => {
+            this.mapService.setPosition({ lat: position.coords.latitude, lng: position.coords.longitude });
+        });
+    }
 
 }
