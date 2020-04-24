@@ -62,7 +62,7 @@ export class MapService {
     get mapZoom$(): Observable<number> {
         return this.store.state$.pipe(
             map(state => state.mapZoom),
-            distinctUntilChanged()
+            distinctUntilChanged(),
         );
     }
 

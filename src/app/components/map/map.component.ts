@@ -1,6 +1,6 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { MapInfoWindow, MapMarker, GoogleMap } from '@angular/google-maps'
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { Station } from 'src/app/models/station';
 import { MapService } from 'src/app/services/map.service';
 import { MatDialogConfig, MatDialog } from '@angular/material/dialog';
@@ -16,7 +16,7 @@ import { first, map } from 'rxjs/operators';
     templateUrl: './map.component.html',
     styleUrls: ['./map.component.scss']
 })
-export class MapComponent implements OnInit {
+export class MapComponent implements OnInit, OnDestroy {
 
     @ViewChild(GoogleMap, { static: false }) googleMap: GoogleMap;
     @ViewChild(MapInfoWindow, { static: false }) mapInfoWindow: MapInfoWindow;
@@ -38,10 +38,12 @@ export class MapComponent implements OnInit {
     stations$: Observable<Station[]>;
     mapFilter$: Observable<MapFilter>;
     mapCenter$: Observable<google.maps.LatLngLiteral>;
-    mapZoom$: Observable<number>;
+    zoom: number = 0;
 
     infoContent = '';
     infoContentId = '';
+
+    mapZoomSubscription = Subscription.EMPTY;
 
     constructor(private mapService: MapService,
                 private dialog: MatDialog) {
@@ -51,7 +53,10 @@ export class MapComponent implements OnInit {
         this.mapFilter$ = this.mapService.mapFilter$;
         this.stations$ = this.mapService.stations$;
         this.mapCenter$ = this.mapService.mapCenter$;
-        this.mapZoom$ = this.mapService.mapZoom$;
+        this.mapZoomSubscription = this.mapService.mapZoom$.subscribe(value => {
+            console.log(value);
+            this.zoom = this.zoom + (value - this.zoom);
+        });
         this.mapService.mapCenter$.pipe(
             first()
         ).subscribe((center) => {
@@ -65,11 +70,20 @@ export class MapComponent implements OnInit {
 
     ngOnDestroy(): void {
         this.mapService.setMapCenter(this.googleMap.getCenter().toJSON());
-        this.mapService.setMapZoom(this.googleMap.getZoom());
+        this.mapZoomSubscription.unsubscribe();
     }
 
-    mapRightclick(event: google.maps.MouseEvent) {
+    mapDblclick(event: google.maps.MouseEvent) {
         this.addStation(event.latLng.toJSON().lat, event.latLng.toJSON().lng);
+    }
+
+    zoomChanged() {
+        
+            setTimeout(() => {
+                console.log('zoomChanged');
+                this.mapService.setMapZoom(this.googleMap.getZoom());
+            })
+        
     }
 
     addStation(lat: number, lng: number) {
@@ -108,7 +122,12 @@ export class MapComponent implements OnInit {
     centerMap() {
         navigator.geolocation.getCurrentPosition((position) => {
             this.mapService.setPosition({ lat: position.coords.latitude, lng: position.coords.longitude });
+            this.mapService.setMapZoom(15);
         });
+    }
+
+    setPositionFromMap() {
+        this.mapService.setPosition(this.googleMap.getCenter().toJSON());
     }
 
 }
