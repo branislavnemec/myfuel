@@ -1,0 +1,4 @@
+ng build --prod=true --aot=true --baseHref=/myfuel/
+
+cordova platform add android
+cordova run android
