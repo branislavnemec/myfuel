@@ -1,5 +1,5 @@
-import { StationsPageStore } from './stations-page.store';
-import { StationFirestore } from './station.firestore';
+import { StationsPageStore } from './store/stations-page.store';
+import { StationFirestore } from './firestore/station.firestore';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Station } from '../models/station';

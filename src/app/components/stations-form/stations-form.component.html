@@ -2,26 +2,40 @@
 
     <mat-card>
         <mat-card-header>
-          <mat-card-title>
-            <mat-form-field class="form-field">
-                <input matInput placeholder="Name" formControlName="name">
-            </mat-form-field>
-          </mat-card-title>
+            <mat-card-title>
+            </mat-card-title>
         </mat-card-header>
     
         <mat-card-content>
-          <p>
+          
+            <mat-form-field class="form-field">
+                <input matInput placeholder="Name" formControlName="name">
+            </mat-form-field>
+
             <mat-form-field class="form-field">
                 <input matInput placeholder="Lat" formControlName="lat">
             </mat-form-field>
+
             <mat-form-field class="form-field">
                 <input matInput placeholder="Lng" formControlName="lng">
             </mat-form-field>
-          </p>
+
+            <mat-form-field class="form-field">
+                <input placeholder="Country"
+                       matInput
+                       formControlName="country"
+                       [matAutocomplete]="auto">
+                <mat-autocomplete #auto [displayWith]="displayFn" (optionSelected)="optionSelected($event)">
+                    <mat-option *ngFor="let country of filteredCountries$ | async" [value]="country">
+                        {{country.name}}
+                    </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+            
         </mat-card-content>
 
         <mat-card-actions>
-          <button mat-button type="submit" [disabled]="inputForm.invalid">Add</button>
+            <button mat-button type="submit" [disabled]="inputForm.invalid">Add</button>
         </mat-card-actions>
     </mat-card>
     <span>{{ status$ | async }}</span>

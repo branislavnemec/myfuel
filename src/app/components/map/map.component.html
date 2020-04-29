@@ -24,8 +24,8 @@
         <a (click)="deleteStation()">delete</a>&nbsp;
     </map-info-window>
 
-    <map-marker
-      [position]="mapCenter$ | async"
+    <map-marker *ngIf="position$"
+      [position]="position$ | async"
       [options]="{ icon: 'assets/images/map/radio_button_checked-black-18dp.svg' }"
     >
     </map-marker>

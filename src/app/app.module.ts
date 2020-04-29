@@ -34,12 +34,15 @@ import { StationsFormComponent } from './components/stations-form/stations-form.
 import { StationEditDialogComponent } from './components/station-edit-dialog/station-edit-dialog.component';
 
 import { StationsService } from './services/stations.service';
-import { StationFirestore } from './services/station.firestore';
-import { StationsPageStore } from './services/stations-page.store';
+import { StationFirestore } from './services/firestore/station.firestore';
+import { StationsPageStore } from './services/store/stations-page.store';
 import { MapService } from './services/map.service';
-import { MapPageStore } from './services/map-page.store';
+import { MapPageStore } from './services/store/map-page.store';
 import { StationService } from './services/station.service';
-import { StationEditDialogStore } from './services/station-edit-dialog.store';
+import { StationEditDialogStore } from './services/store/station-edit-dialog.store';
+import { CountriesService } from './services/countries.service';
+import { CountryFirestore } from './services/firestore/country.firestore';
+import { LovCountriesStore } from './services/store/lov-countries.store';
 
 
 @NgModule({
@@ -82,7 +85,10 @@ import { StationEditDialogStore } from './services/station-edit-dialog.store';
     MapService,
     MapPageStore,
     StationService,
-    StationEditDialogStore
+    StationEditDialogStore,
+    CountriesService,
+    CountryFirestore,
+    LovCountriesStore,
   ],
   bootstrap: [AppComponent],
   entryComponents: [StationEditDialogComponent]

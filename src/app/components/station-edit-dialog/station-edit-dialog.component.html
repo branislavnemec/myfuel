@@ -20,6 +20,18 @@
                 formControlName="lng">
     </mat-form-field>
 
+    <mat-form-field>
+        <input matInput
+                placeholder="Country"
+                formControlName="country"
+                [matAutocomplete]="auto">
+        <mat-autocomplete #auto [displayWith]="displayFn" (optionSelected)="optionSelected($event)">
+            <mat-option *ngFor="let country of filteredCountries$ | async" [value]="country">
+                {{country.name}}
+            </mat-option>
+        </mat-autocomplete>
+    </mat-form-field>
+
 </mat-dialog-content>
 
 <mat-dialog-actions>

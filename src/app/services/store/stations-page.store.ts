@@ -1,4 +1,4 @@
-import { StationsPage } from '../states/stations-page';
+import { StationsPage } from '../../states/stations-page';
 import { StoreService } from './store.service';
 import { Injectable } from '@angular/core';
 

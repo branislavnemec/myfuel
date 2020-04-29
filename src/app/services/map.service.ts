@@ -1,9 +1,9 @@
-import { StationFirestore } from './station.firestore';
+import { StationFirestore } from './firestore/station.firestore';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { Station } from '../models/station';
-import { tap, map, distinctUntilChanged } from 'rxjs/operators';
-import { MapPageStore } from './map-page.store';
+import { tap, map, distinctUntilChanged, filter } from 'rxjs/operators';
+import { MapPageStore } from './store/map-page.store';
 import { MapFilter } from '../models/map-filter';
 import { switchMap } from 'rxjs/operators';
 import { GeoUtils } from '../utils/geo-utils';
@@ -20,8 +20,8 @@ export class MapService {
         private store: MapPageStore
     ) {
         this.position$.pipe(
+            filter((position: google.maps.LatLngLiteral) => !!position),
             switchMap((position: google.maps.LatLngLiteral) => {
-                if (!position) { return new Observable(null); }
                 return this.mapFilter$.pipe(
                     switchMap((mapFilter: MapFilter) => {
                         return this.firestore.geoCollection$(this.geo.point(position.lat, position.lng), mapFilter.range, 'position').pipe(
@@ -69,12 +69,7 @@ export class MapService {
     get position$(): Observable<google.maps.LatLngLiteral> {
         return this.store.state$.pipe(
             map(state => state.position),
-            distinctUntilChanged(),
-            tap((position) => {
-                if (position) {
-                    this.setMapCenter(position);
-                }
-            })
+            distinctUntilChanged()
         );
     }
 

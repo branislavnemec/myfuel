@@ -1,5 +1,5 @@
-import { StationEditDialogStore } from './station-edit-dialog.store';
-import { StationFirestore } from './station.firestore';
+import { StationEditDialogStore } from './store/station-edit-dialog.store';
+import { StationFirestore } from './firestore/station.firestore';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Station } from '../models/station';

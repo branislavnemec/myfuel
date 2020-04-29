@@ -38,6 +38,7 @@ export class MapComponent implements OnInit, OnDestroy {
     stations$: Observable<Station[]>;
     mapFilter$: Observable<MapFilter>;
     mapCenter$: Observable<google.maps.LatLngLiteral>;
+    position$: Observable<google.maps.LatLngLiteral>;
     zoom: number = 0;
 
     infoContent = '';
@@ -53,6 +54,7 @@ export class MapComponent implements OnInit, OnDestroy {
         this.mapFilter$ = this.mapService.mapFilter$;
         this.stations$ = this.mapService.stations$;
         this.mapCenter$ = this.mapService.mapCenter$;
+        this.position$ = this.mapService.position$;
         this.mapZoomSubscription = this.mapService.mapZoom$.subscribe(value => {
             console.log(value);
             this.zoom = this.zoom + (value - this.zoom);
@@ -63,6 +65,7 @@ export class MapComponent implements OnInit, OnDestroy {
             if (!center) {
                 navigator.geolocation.getCurrentPosition((position) => {
                     this.mapService.setPosition({ lat: position.coords.latitude, lng: position.coords.longitude });
+                    this.mapService.setMapCenter({ lat: position.coords.latitude, lng: position.coords.longitude });
                 });
             }
         });
@@ -92,7 +95,13 @@ export class MapComponent implements OnInit, OnDestroy {
             name: 'new',
             lat: lat,
             lng: lng,
-            position: position
+            position: position,
+            address: {
+                country: '',
+                city: '',
+                street: '',
+                zip: ''
+            }
         };
         this.mapService.create(newStation);
     }
@@ -122,12 +131,14 @@ export class MapComponent implements OnInit, OnDestroy {
     centerMap() {
         navigator.geolocation.getCurrentPosition((position) => {
             this.mapService.setPosition({ lat: position.coords.latitude, lng: position.coords.longitude });
+            this.mapService.setMapCenter({ lat: position.coords.latitude, lng: position.coords.longitude });
             this.mapService.setMapZoom(15);
         });
     }
 
     setPositionFromMap() {
         this.mapService.setPosition(this.googleMap.getCenter().toJSON());
+        this.mapService.setMapCenter(this.googleMap.getCenter().toJSON());
     }
 
 }
