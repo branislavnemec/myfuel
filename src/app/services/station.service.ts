@@ -3,7 +3,7 @@ import { StationFirestore } from './firestore/station.firestore';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Station } from '../models/station';
-import { tap, map, catchError } from 'rxjs/operators';
+import { tap, map, catchError, distinctUntilChanged } from 'rxjs/operators';
 
 @Injectable()
 export class StationService {
@@ -16,13 +16,17 @@ export class StationService {
     }
 
     get station$(): Observable<Station> {
-        return this.store.state$.pipe(map(state => state.loading
-            ? null
-            : state.station));
+        return this.store.state$.pipe(
+            map(state => state.station),
+            distinctUntilChanged()
+        );
     }
 
     get loading$(): Observable<boolean> {
-        return this.store.state$.pipe(map(state => state.loading));
+        return this.store.state$.pipe(
+            map(state => state.loading),
+            distinctUntilChanged()
+        );
     }
 
     get noResult$(): Observable<boolean> {
@@ -30,12 +34,16 @@ export class StationService {
             map(state => {
                 return !state.loading
                     && !state.station
-            })
+            }),
+            distinctUntilChanged()
         );
     }
 
     get formStatus$(): Observable<string> {
-        return this.store.state$.pipe(map(state => state.formStatus));
+        return this.store.state$.pipe(
+            map(state => state.formStatus),
+            distinctUntilChanged()
+        );
     }
 
     update(station: Station) {

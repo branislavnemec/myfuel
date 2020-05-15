@@ -106,4 +106,8 @@ export class MapService {
         this.store.patch({ position: position }, 'position set');
     }
 
+    setMapFilter(mapFilter: MapFilter) {
+        this.store.patch({ mapFilter: mapFilter }, 'map filter set');
+    }
+
 }

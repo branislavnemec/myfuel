@@ -25,12 +25,20 @@
     </map-info-window>
 
     <map-marker *ngIf="position$"
-      [position]="position$ | async"
-      [options]="{ icon: 'assets/images/map/radio_button_checked-black-18dp.svg' }"
+        [position]="position$ | async"
+        [options]="{ icon: 'assets/images/map/radio_button_checked-black-18dp.svg' }"
     >
     </map-marker>
+
+    <map-circle *ngIf="position$"
+        [center]="position$ | async"
+        [radius]="(mapFilter$ | async).range * 1000"
+        (circleDblclick)="circleDblclick($event)"
+    >
+    </map-circle>
 
 </google-map>
 
 <img class="map-center-button" (click)="centerMap()" width="41px" height="41px" src="assets/images/map/gps_fixed-black-48dp.svg">
-<img class="map-new-position-button" (click)="setPositionFromMap()" width="41px" height="41px" src="assets/images/map/center_focus_weak-black-48dp.svg">
+<img class="map-new-position-button" (click)="setPositionFromMapCenter()" width="41px" height="41px" src="assets/images/map/center_focus_weak-black-48dp.svg">
+<img class="map-filter-button" (click)="openMapFilter()" width="41px" height="41px" src="assets/images/map/settings-black-48dp.svg">

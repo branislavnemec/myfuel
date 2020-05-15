@@ -21,6 +21,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTableModule } from '@angular/material/table';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatSliderModule } from '@angular/material/slider';
 
 import { AppRoutingModule } from './app-routing.module';
 
@@ -43,6 +44,7 @@ import { StationEditDialogStore } from './services/store/station-edit-dialog.sto
 import { CountriesService } from './services/countries.service';
 import { CountryFirestore } from './services/firestore/country.firestore';
 import { LovCountriesStore } from './services/store/lov-countries.store';
+import { MapFilterDialogComponent } from './components/map-filter-dialog/map-filter-dialog.component';
 
 
 @NgModule({
@@ -52,7 +54,8 @@ import { LovCountriesStore } from './services/store/lov-countries.store';
     StationsPageComponent,
     StationsListComponent,
     StationsFormComponent,
-    StationEditDialogComponent
+    StationEditDialogComponent,
+    MapFilterDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -76,7 +79,8 @@ import { LovCountriesStore } from './services/store/lov-countries.store';
     MatExpansionModule,
     MatTableModule,
     ReactiveFormsModule,
-    MatDialogModule
+    MatDialogModule,
+    MatSliderModule
   ],
   providers: [
     StationsService,
@@ -91,6 +95,9 @@ import { LovCountriesStore } from './services/store/lov-countries.store';
     LovCountriesStore,
   ],
   bootstrap: [AppComponent],
-  entryComponents: [StationEditDialogComponent]
+  entryComponents: [
+    StationEditDialogComponent,
+    MapFilterDialogComponent
+  ]
 })
 export class AppModule { }

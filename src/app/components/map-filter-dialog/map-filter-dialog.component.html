@@ -1,0 +1,26 @@
+<h2 mat-dialog-title>Filter</h2>
+
+<mat-dialog-content>
+
+    <mat-card>
+        <mat-card-content>
+            <h3>Range (km)</h3>
+      
+            <mat-slider
+                [max]="15"
+                [min]="5"
+                [step]="5"
+                [thumbLabel]="true"
+                [value]="(mapFilter$ | async).range"
+                (change)="rangeChange($event)">
+            </mat-slider>
+
+        </mat-card-content>
+    </mat-card>
+
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <button class="mat-raised-button" (click)="close()">Cancel</button>
+    <button class="mat-raised-button mat-primary" (click)="submit()">Set</button>
+</mat-dialog-actions>

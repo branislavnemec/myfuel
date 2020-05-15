@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { MapInfoWindow, MapMarker, GoogleMap } from '@angular/google-maps'
+import { MapInfoWindow, MapMarker, GoogleMap, MapCircle } from '@angular/google-maps'
 import { Observable, Subscription } from 'rxjs';
 import { Station } from 'src/app/models/station';
 import { MapService } from 'src/app/services/map.service';
@@ -10,6 +10,7 @@ import * as geofirex from 'geofirex';
 import { MapFilter } from 'src/app/models/map-filter';
 import { GeoUtils } from 'src/app/utils/geo-utils';
 import { first, map } from 'rxjs/operators';
+import { MapFilterDialogComponent } from '../map-filter-dialog/map-filter-dialog.component';
 
 @Component({
     selector: 'app-map',
@@ -77,16 +78,18 @@ export class MapComponent implements OnInit, OnDestroy {
     }
 
     mapDblclick(event: google.maps.MouseEvent) {
+        this.mapService.setPosition({ lat: event.latLng.toJSON().lat, lng: event.latLng.toJSON().lng });
+    }
+
+    circleDblclick(event: google.maps.MouseEvent) {
         this.addStation(event.latLng.toJSON().lat, event.latLng.toJSON().lng);
     }
 
     zoomChanged() {
-        
-            setTimeout(() => {
-                console.log('zoomChanged');
-                this.mapService.setMapZoom(this.googleMap.getZoom());
-            })
-        
+        setTimeout(() => {
+            console.log('zoomChanged');
+            this.mapService.setMapZoom(this.googleMap.getZoom());
+        })
     }
 
     addStation(lat: number, lng: number) {
@@ -136,9 +139,15 @@ export class MapComponent implements OnInit, OnDestroy {
         });
     }
 
-    setPositionFromMap() {
+    setPositionFromMapCenter() {
         this.mapService.setPosition(this.googleMap.getCenter().toJSON());
         this.mapService.setMapCenter(this.googleMap.getCenter().toJSON());
+    }
+
+    openMapFilter() {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.autoFocus = true;
+        this.dialog.open(MapFilterDialogComponent, dialogConfig);
     }
 
 }

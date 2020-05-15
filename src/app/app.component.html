@@ -19,7 +19,27 @@
 <mat-sidenav-container class="sidenav-container">
 
     <mat-sidenav #sidenav mode="over" class="sidenav">
-        <p (click)="sidenav.toggle()">myFuel - todo..................</p>
+
+        <mat-toolbar color="primary">
+            <mat-toolbar-row>
+                <button mat-icon-button (click)="sidenav.toggle()">
+                    <mat-icon>close</mat-icon>
+                </button>
+                MyFuel v. 1.0.0
+            </mat-toolbar-row>
+        </mat-toolbar>
+
+        <mat-action-list>
+            <button mat-list-item (click)="goToMap(); sidenav.toggle()">
+                <mat-icon>map</mat-icon>
+                &nbsp;&nbsp; Map
+            </button>
+            <button mat-list-item (click)="goToStations(); sidenav.toggle()">
+                <mat-icon>list</mat-icon>
+                &nbsp;&nbsp; Stations
+            </button>
+        </mat-action-list>
+
     </mat-sidenav>
 
     <mat-sidenav-content class="sidenav-content">
