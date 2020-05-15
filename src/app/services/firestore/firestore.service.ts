@@ -3,17 +3,17 @@ import { AngularFirestore, QueryFn } from "@angular/fire/firestore";
 import { Observable } from "rxjs";
 import { tap } from "rxjs/operators";
 import { environment } from "src/environments/environment";
-import * as firebase from 'firebase/app';
+import { GeoFireXService } from '../../utils/geofirex.service';
 import * as geofirex from 'geofirex';
 
 @Injectable()
 export abstract class FirestoreService<T> {
 
-    protected geo: geofirex.GeoFireClient = geofirex.init(firebase);
     protected abstract basePath: string;
 
     constructor(
         protected firestore: AngularFirestore,
+        protected geoFireXService: GeoFireXService
     ) {}
 
     doc$(id: string): Observable<T> {
@@ -41,7 +41,7 @@ export abstract class FirestoreService<T> {
     }
 
     geoCollection$(center: geofirex.FirePoint, radius: number, field: string, opts?: geofirex.GeoQueryOptions): Observable<T[]> {
-        return this.geo.query<T>(`${this.basePath}`).within(center, radius, field, opts).pipe(
+        return this.geoFireXService.geoFireClient.query<T>(`${this.basePath}`).within(center, radius, field, opts).pipe(
             tap(r => {
                 if (!environment.production) {
                     console.groupCollapsed(`Firestore Streaming [${this.basePath}] [geoCollection$]`)

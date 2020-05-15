@@ -5,8 +5,9 @@ import { Observable } from 'rxjs';
 import { Station } from 'src/app/models/station';
 import { CountriesService } from 'src/app/services/countries.service';
 import { Country } from 'src/app/models/country';
-import { filter, map, switchMap, tap } from 'rxjs/operators';
+import { filter, map, switchMap } from 'rxjs/operators';
 import { ObjectValidator } from 'src/app/utils/validators';
+import { GeoFireXService } from 'src/app/utils/geofirex.service';
 
 @Component({
     selector: 'app-stations-form',
@@ -19,7 +20,10 @@ export class StationsFormComponent implements OnInit {
         name: new FormControl('', Validators.required),
         lat: new FormControl('', Validators.required),
         lng: new FormControl('', Validators.required),
-        country: new FormControl('', [Validators.required, ObjectValidator.notObject])
+        country: new FormControl('', [Validators.required, ObjectValidator.mustBeObject]),
+        city: new FormControl(''),
+        street: new FormControl(''),
+        zip: new FormControl(''),
     });
 
     status$: Observable<string>;
@@ -30,7 +34,8 @@ export class StationsFormComponent implements OnInit {
 
     constructor(
         private stationsService: StationsService,
-        private countriesService: CountriesService
+        private countriesService: CountriesService,
+        private geoFireXService: GeoFireXService
     ) {}
 
     ngOnInit() {
@@ -66,16 +71,17 @@ export class StationsFormComponent implements OnInit {
 
     async submit() {
         this.inputForm.disable();
+        const position = this.geoFireXService.geoFireClient.point(Number(this.inputForm.controls.lat.value), Number(this.inputForm.controls.lng.value));
         const newStation: Station = {
-            name: this.inputForm.controls.name.value,
+            name: this.inputForm.controls.name.value.toString(),
             lat: Number(this.inputForm.controls.lat.value),
             lng: Number(this.inputForm.controls.lng.value),
-            position: null,
+            position: position,
             address: {
                 country: this.inputForm.controls.country.value.id,
-                city: '',
-                street: '',
-                zip: ''
+                city: this.inputForm.controls.city.value,
+                street: this.inputForm.controls.street.value,
+                zip: this.inputForm.controls.zip.value
             }
         }
         await this.stationsService.create(newStation);

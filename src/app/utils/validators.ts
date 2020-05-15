@@ -2,9 +2,9 @@ import { FormControl } from '@angular/forms';
 
 export class ObjectValidator {
 
-    static notObject(formControl: FormControl) {
+    static mustBeObject(formControl: FormControl) {
         if (formControl.value && formControl.value !== '' && typeof formControl.value !== 'object') {
-            return { notObject: true };
+            return { mustBeObject: true };
         }
         return null;
     }

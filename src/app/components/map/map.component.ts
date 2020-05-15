@@ -1,16 +1,14 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { MapInfoWindow, MapMarker, GoogleMap, MapCircle } from '@angular/google-maps'
+import { MapInfoWindow, MapMarker, GoogleMap } from '@angular/google-maps'
 import { Observable, Subscription } from 'rxjs';
 import { Station } from 'src/app/models/station';
 import { MapService } from 'src/app/services/map.service';
 import { MatDialogConfig, MatDialog } from '@angular/material/dialog';
 import { StationEditDialogComponent } from '../station-edit-dialog/station-edit-dialog.component';
-import * as firebase from 'firebase/app';
-import * as geofirex from 'geofirex';
 import { MapFilter } from 'src/app/models/map-filter';
-import { GeoUtils } from 'src/app/utils/geo-utils';
-import { first, map } from 'rxjs/operators';
+import { first } from 'rxjs/operators';
 import { MapFilterDialogComponent } from '../map-filter-dialog/map-filter-dialog.component';
+import { GeoFireXService } from 'src/app/utils/geofirex.service';
 
 @Component({
     selector: 'app-map',
@@ -21,8 +19,6 @@ export class MapComponent implements OnInit, OnDestroy {
 
     @ViewChild(GoogleMap, { static: false }) googleMap: GoogleMap;
     @ViewChild(MapInfoWindow, { static: false }) mapInfoWindow: MapInfoWindow;
-
-    geo: geofirex.GeoFireClient = geofirex.init(firebase);
 
     options: google.maps.MapOptions = {
         mapTypeId: google.maps.MapTypeId.ROADMAP,
@@ -48,7 +44,8 @@ export class MapComponent implements OnInit, OnDestroy {
     mapZoomSubscription = Subscription.EMPTY;
 
     constructor(private mapService: MapService,
-                private dialog: MatDialog) {
+                private dialog: MatDialog,
+                private geoFireXService: GeoFireXService) {
     }
 
     ngOnInit(): void {
@@ -93,7 +90,7 @@ export class MapComponent implements OnInit, OnDestroy {
     }
 
     addStation(lat: number, lng: number) {
-        const position = this.geo.point(lat, lng);
+        const position = this.geoFireXService.geoFireClient.point(lat, lng);
         const newStation: Station = {
             name: 'new',
             lat: lat,

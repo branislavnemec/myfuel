@@ -1,30 +1,27 @@
 import { StationFirestore } from './firestore/station.firestore';
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Station } from '../models/station';
 import { tap, map, distinctUntilChanged, filter } from 'rxjs/operators';
 import { MapPageStore } from './store/map-page.store';
 import { MapFilter } from '../models/map-filter';
 import { switchMap } from 'rxjs/operators';
-import { GeoUtils } from '../utils/geo-utils';
-import * as firebase from 'firebase/app';
-import * as geofirex from 'geofirex';
+import { GeoFireXService } from '../utils/geofirex.service';
 
 @Injectable()
 export class MapService {
 
-    geo: geofirex.GeoFireClient = geofirex.init(firebase);
-
     constructor(
         private firestore: StationFirestore,
-        private store: MapPageStore
+        private store: MapPageStore,
+        private geoFireXService: GeoFireXService
     ) {
         this.position$.pipe(
             filter((position: google.maps.LatLngLiteral) => !!position),
             switchMap((position: google.maps.LatLngLiteral) => {
                 return this.mapFilter$.pipe(
                     switchMap((mapFilter: MapFilter) => {
-                        return this.firestore.geoCollection$(this.geo.point(position.lat, position.lng), mapFilter.range, 'position').pipe(
+                        return this.firestore.geoCollection$(this.geoFireXService.geoFireClient.point(position.lat, position.lng), mapFilter.range, 'position').pipe(
                             tap((stations) => {
                                 this.store.patch({
                                     stations,        

@@ -45,6 +45,7 @@ import { CountriesService } from './services/countries.service';
 import { CountryFirestore } from './services/firestore/country.firestore';
 import { LovCountriesStore } from './services/store/lov-countries.store';
 import { MapFilterDialogComponent } from './components/map-filter-dialog/map-filter-dialog.component';
+import { GeoFireXService } from './utils/geofirex.service';
 
 
 @NgModule({
@@ -93,6 +94,7 @@ import { MapFilterDialogComponent } from './components/map-filter-dialog/map-fil
     CountriesService,
     CountryFirestore,
     LovCountriesStore,
+    GeoFireXService
   ],
   bootstrap: [AppComponent],
   entryComponents: [

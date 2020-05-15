@@ -1,15 +1,7 @@
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
-import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
-import { StationService } from 'src/app/services/station.service';
-import { first, filter, switchMap, map, tap } from 'rxjs/operators';
-import { Station } from 'src/app/models/station';
-import { Observable, Subscription } from 'rxjs';
-import * as firebase from 'firebase/app';
-import * as geofirex from 'geofirex';
-import { Country } from 'src/app/models/country';
-import { CountriesService } from 'src/app/services/countries.service';
-import { ObjectValidator } from 'src/app/utils/validators';
+import { MatDialogRef } from '@angular/material/dialog';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { tap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 import { MapService } from 'src/app/services/map.service';
 import { MapFilter } from 'src/app/models/map-filter';
 
