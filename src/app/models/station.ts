@@ -1,6 +1,7 @@
 export interface Station {
     id?: string;
     name: string;
+    name_lowercase: string;
     address?: {
         country: string,
         city: string,
@@ -10,4 +11,5 @@ export interface Station {
     lat: number;
     lng: number;
     position: any;
+    keywords: string[]
 }

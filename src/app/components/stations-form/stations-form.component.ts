@@ -8,6 +8,7 @@ import { Country } from 'src/app/models/country';
 import { filter, map, switchMap } from 'rxjs/operators';
 import { ObjectValidator } from 'src/app/utils/validators';
 import { GeoFireXService } from 'src/app/utils/geofirex.service';
+import { Keywords } from 'src/app/utils/keywords';
 
 @Component({
     selector: 'app-stations-form',
@@ -74,6 +75,7 @@ export class StationsFormComponent implements OnInit {
         const position = this.geoFireXService.geoFireClient.point(Number(this.inputForm.controls.lat.value), Number(this.inputForm.controls.lng.value));
         const newStation: Station = {
             name: this.inputForm.controls.name.value.toString(),
+            name_lowercase: this.inputForm.controls.name.value.toString().toLowerCase(),
             lat: Number(this.inputForm.controls.lat.value),
             lng: Number(this.inputForm.controls.lng.value),
             position: position,
@@ -82,7 +84,8 @@ export class StationsFormComponent implements OnInit {
                 city: this.inputForm.controls.city.value,
                 street: this.inputForm.controls.street.value,
                 zip: this.inputForm.controls.zip.value
-            }
+            },
+            keywords: Keywords.generateKeywords([this.inputForm.controls.name.value.toString(), this.inputForm.controls.city.value])
         }
         await this.stationsService.create(newStation);
         this.inputForm.reset();

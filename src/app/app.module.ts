@@ -22,6 +22,8 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTableModule } from '@angular/material/table';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSliderModule } from '@angular/material/slider';
+import { MatSelectModule } from '@angular/material/select';
+import { MatChipsModule } from '@angular/material/chips';
 
 import { AppRoutingModule } from './app-routing.module';
 
@@ -32,7 +34,9 @@ import { MapComponent } from './components/map/map.component';
 import { StationsPageComponent } from './components/stations-page/stations-page.component';
 import { StationsListComponent } from './components/stations-list/stations-list.component';
 import { StationsFormComponent } from './components/stations-form/stations-form.component';
+import { StationsFilterDialogComponent } from './components/stations-filter-dialog/stations-filter-dialog.component';
 import { StationEditDialogComponent } from './components/station-edit-dialog/station-edit-dialog.component';
+import { MapFilterDialogComponent } from './components/map-filter-dialog/map-filter-dialog.component';
 
 import { StationsService } from './services/stations.service';
 import { StationFirestore } from './services/firestore/station.firestore';
@@ -44,7 +48,6 @@ import { StationEditDialogStore } from './services/store/station-edit-dialog.sto
 import { CountriesService } from './services/countries.service';
 import { CountryFirestore } from './services/firestore/country.firestore';
 import { LovCountriesStore } from './services/store/lov-countries.store';
-import { MapFilterDialogComponent } from './components/map-filter-dialog/map-filter-dialog.component';
 import { GeoFireXService } from './utils/geofirex.service';
 
 
@@ -56,6 +59,7 @@ import { GeoFireXService } from './utils/geofirex.service';
     StationsListComponent,
     StationsFormComponent,
     StationEditDialogComponent,
+    StationsFilterDialogComponent,
     MapFilterDialogComponent
   ],
   imports: [
@@ -81,7 +85,9 @@ import { GeoFireXService } from './utils/geofirex.service';
     MatTableModule,
     ReactiveFormsModule,
     MatDialogModule,
-    MatSliderModule
+    MatSliderModule,
+    MatSelectModule,
+    MatChipsModule
   ],
   providers: [
     StationsService,
@@ -99,6 +105,7 @@ import { GeoFireXService } from './utils/geofirex.service';
   bootstrap: [AppComponent],
   entryComponents: [
     StationEditDialogComponent,
+    StationsFilterDialogComponent,
     MapFilterDialogComponent
   ]
 })

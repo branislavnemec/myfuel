@@ -9,6 +9,7 @@ import { Country } from 'src/app/models/country';
 import { CountriesService } from 'src/app/services/countries.service';
 import { ObjectValidator } from 'src/app/utils/validators';
 import { GeoFireXService } from 'src/app/utils/geofirex.service';
+import { Keywords } from 'src/app/utils/keywords';
 
 @Component({
     selector: 'app-station-edit-dialog',
@@ -107,6 +108,7 @@ export class StationEditDialogComponent implements OnInit, OnDestroy {
         const updatedStation: Station = {
             id: this.stationId,
             name: this.inputForm.controls.name.value.toString(),
+            name_lowercase: this.inputForm.controls.name.value.toString().toLowerCase(),
             lat: Number(this.inputForm.controls.lat.value),
             lng: Number(this.inputForm.controls.lng.value),
             position: position,
@@ -115,7 +117,8 @@ export class StationEditDialogComponent implements OnInit, OnDestroy {
                 city: this.inputForm.controls.city.value,
                 street: this.inputForm.controls.street.value,
                 zip: this.inputForm.controls.zip.value
-            }
+            },
+            keywords: Keywords.generateKeywords([this.inputForm.controls.name.value.toString(), this.inputForm.controls.city.value])
         }
         this.stationService.update(updatedStation).then(
             (result) => {

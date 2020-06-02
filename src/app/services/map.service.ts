@@ -21,11 +21,12 @@ export class MapService {
             switchMap((position: google.maps.LatLngLiteral) => {
                 return this.mapFilter$.pipe(
                     switchMap((mapFilter: MapFilter) => {
+                        console.log('call geoQuery.........');
                         return this.firestore.geoCollection$(this.geoFireXService.geoFireClient.point(position.lat, position.lng), mapFilter.range, 'position').pipe(
                             tap((stations) => {
                                 this.store.patch({
                                     stations,        
-                                }, 'map stations collection subscription');
+                                }, 'map stations geoCollection subscription');
                             })
                         );
                     })

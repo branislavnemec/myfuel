@@ -9,6 +9,6 @@ export class StationEditDialogStore extends StoreService<StationEditDialog> {
 
     constructor() {
         super({
-        })
+        });
     }
 }

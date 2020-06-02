@@ -11,6 +11,13 @@ export class StationsPageStore extends StoreService<StationsPage> {
         super({
             loading: true,
             stations: [],
-        })
+            searchInputValue: '',
+            stationsFilter: {
+                country: {
+                    id: '2KVjEmyGo31uzkOIsVKN',
+                    name: 'Slovakia'
+                },
+            },
+        });
     }
 }

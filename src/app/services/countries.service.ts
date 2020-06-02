@@ -10,16 +10,17 @@ export class CountriesService {
 
     constructor(
         private firestore: CountryFirestore,
-        private store: LovCountriesStore
-    ) {
+        private store: LovCountriesStore) {
+
         this.firestore.collection$().pipe(
             tap(countries => {
                 this.store.patch({
                     loading: false,
                     countries,        
-                }, `countries collection subscription`);
+                }, 'countries collection subscription');
             })
         ).subscribe();
+
     }
 
     get countries$(): Observable<Country[]> {

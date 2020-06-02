@@ -9,6 +9,8 @@ import { MapFilter } from 'src/app/models/map-filter';
 import { first } from 'rxjs/operators';
 import { MapFilterDialogComponent } from '../map-filter-dialog/map-filter-dialog.component';
 import { GeoFireXService } from 'src/app/utils/geofirex.service';
+import { Keywords } from 'src/app/utils/keywords';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: 'app-map',
@@ -45,6 +47,7 @@ export class MapComponent implements OnInit, OnDestroy {
 
     constructor(private mapService: MapService,
                 private dialog: MatDialog,
+                private route: ActivatedRoute,
                 private geoFireXService: GeoFireXService) {
     }
 
@@ -60,7 +63,11 @@ export class MapComponent implements OnInit, OnDestroy {
         this.mapService.mapCenter$.pipe(
             first()
         ).subscribe((center) => {
-            if (!center) {
+            if (!!this.route.snapshot.queryParams.lat && !!this.route.snapshot.queryParams.lng) {
+                this.mapService.setPosition({ lat: Number(this.route.snapshot.queryParams.lat), lng: Number(this.route.snapshot.queryParams.lng) });
+                this.mapService.setMapCenter({ lat: Number(this.route.snapshot.queryParams.lat), lng: Number(this.route.snapshot.queryParams.lng) });
+                this.mapService.setMapZoom(15);
+            } else if (!center) {
                 navigator.geolocation.getCurrentPosition((position) => {
                     this.mapService.setPosition({ lat: position.coords.latitude, lng: position.coords.longitude });
                     this.mapService.setMapCenter({ lat: position.coords.latitude, lng: position.coords.longitude });
@@ -93,6 +100,7 @@ export class MapComponent implements OnInit, OnDestroy {
         const position = this.geoFireXService.geoFireClient.point(lat, lng);
         const newStation: Station = {
             name: 'new',
+            name_lowercase: 'new',
             lat: lat,
             lng: lng,
             position: position,
@@ -101,7 +109,8 @@ export class MapComponent implements OnInit, OnDestroy {
                 city: '',
                 street: '',
                 zip: ''
-            }
+            },
+            keywords: Keywords.generateKeywords(['new', ''])
         };
         this.mapService.create(newStation);
     }

@@ -11,6 +11,6 @@ export class LovCountriesStore extends StoreService<LovCountries> {
         super({
             loading: true,
             countries: [],
-        })
+        });
     }
 }
