@@ -46,4 +46,10 @@ testem.log
 Thumbs.db
 
 # Cordova
-/mobile
+/mobile/node_modules
+/mobile/platforms
+/mobile/plugins
+/mobile/www
+/mobile/hooks
+
+
