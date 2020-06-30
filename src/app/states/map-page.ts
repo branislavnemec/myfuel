@@ -8,4 +8,5 @@ export interface MapPage {
     mapCenter: google.maps.LatLngLiteral;
     mapZoom: number;
     position: google.maps.LatLngLiteral;
+    circleDraggable: boolean;
 }

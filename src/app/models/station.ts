@@ -11,5 +11,7 @@ export interface Station {
     lat: number;
     lng: number;
     position: any;
-    keywords: string[]
+    keywords: string[],
+    fuels?: string[],
+    prices?: any
 }

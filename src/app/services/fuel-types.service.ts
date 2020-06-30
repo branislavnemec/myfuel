@@ -1,31 +1,31 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { tap, map, distinctUntilChanged } from 'rxjs/operators';
-import { CountryFirestore } from './firestore/country.firestore';
-import { LovCountriesStore } from './store/lov-countries.store';
-import { Country } from '../models/country';
+import { FuelTypeFirestore } from './firestore/fuel-type.firestore';
+import { LovFuelTypesStore } from './store/lov-fuel-types.store';
+import { FuelType } from '../models/fuel-type';
 
 @Injectable()
-export class CountriesService {
+export class FuelTypesService {
 
     constructor(
-        private firestore: CountryFirestore,
-        private store: LovCountriesStore) {
+        private firestore: FuelTypeFirestore,
+        private store: LovFuelTypesStore) {
 
         this.firestore.collection$().pipe(
-            tap(countries => {
+            tap(fuelTypes => {
                 this.store.patch({
                     loading: false,
-                    countries,
-                }, 'countries collection subscription');
+                    fuelTypes,
+                }, 'fuels collection subscription');
             })
         ).subscribe();
 
     }
 
-    get countries$(): Observable<Country[]> {
+    get fuelTypes$(): Observable<FuelType[]> {
         return this.store.state$.pipe(
-            map(state => state.countries),
+            map(state => state.fuelTypes),
             distinctUntilChanged()
         );
     }
@@ -41,8 +41,8 @@ export class CountriesService {
         return this.store.state$.pipe(
             map(state => {
                 return !state.loading
-                    && state.countries
-                    && state.countries.length === 0
+                    && state.fuelTypes
+                    && state.fuelTypes.length === 0
             }),
             distinctUntilChanged()
         );

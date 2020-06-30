@@ -5,7 +5,7 @@ import { LovCountries } from 'src/app/states/lov-countries';
 @Injectable()
 export class LovCountriesStore extends StoreService<LovCountries> {
 
-    protected store: string = 'lov-countries';
+    protected store = 'lov-countries';
 
     constructor() {
         super({

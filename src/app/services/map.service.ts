@@ -25,7 +25,7 @@ export class MapService {
                         return this.firestore.geoCollection$(this.geoFireXService.geoFireClient.point(position.lat, position.lng), mapFilter.range, 'position').pipe(
                             tap((stations) => {
                                 this.store.patch({
-                                    stations,        
+                                    stations,
                                 }, 'map stations geoCollection subscription');
                             })
                         );
@@ -71,6 +71,13 @@ export class MapService {
         );
     }
 
+    get circleDraggable$(): Observable<boolean> {
+        return this.store.state$.pipe(
+            map(state => state.circleDraggable),
+            distinctUntilChanged()
+        );
+    }
+
     create(station: Station) {
         this.store.patch({
         }, 'station create');
@@ -106,6 +113,10 @@ export class MapService {
 
     setMapFilter(mapFilter: MapFilter) {
         this.store.patch({ mapFilter: mapFilter }, 'map filter set');
+    }
+
+    toggleCircleDraggable(draggable: boolean) {
+        this.store.patch({ circleDraggable: draggable }, 'circle draggable togle');
     }
 
 }

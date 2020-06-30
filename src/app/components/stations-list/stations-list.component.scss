@@ -1,5 +1,5 @@
 .table-container {
-    max-height: calc(100vh - 64px - 48px - 16px - 64px - 56.5625px - 64px - 20px);
+    max-height: calc(100vh - 64px - 48px - 16px - 64px - 40px - 56.56px - 64px - 10px);
     overflow: auto;
 }
 
@@ -18,7 +18,7 @@ mat-form-field {
 
 @media (max-width: 599px) {
     .table-container {
-        max-height: calc(100vh - 56px - 48px - 16px - 64px - 56.5625px - 56px - 20px);
+        max-height: calc(100vh - 56px - 48px - 16px - 64px - 40px - 56.56px - 56px - 10px);
     }
 }
 

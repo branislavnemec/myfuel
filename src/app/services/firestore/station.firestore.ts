@@ -5,6 +5,6 @@ import { Station } from '../../models/station';
 @Injectable()
 export class StationFirestore extends FirestoreService<Station> {
 
-    protected basePath: string = 'stations';
+    protected basePath = 'stations';
 
 }

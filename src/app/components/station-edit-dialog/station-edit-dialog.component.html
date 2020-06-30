@@ -44,6 +44,12 @@
         <input matInput placeholder="Zip" formControlName="zip">
     </mat-form-field>
 
+    <ng-container formArrayName="fuelTypesArray">
+        <div *ngFor="let c of inputForm.get('fuelTypesArray')['controls']; index as i">
+            <mat-slide-toggle [formControlName]="i">{{ fuelTypes[i].name }}</mat-slide-toggle>
+        </div>
+    </ng-container>
+
 </mat-dialog-content>
 
 <mat-dialog-actions>

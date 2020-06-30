@@ -1,8 +1,8 @@
-import { Injectable } from "@angular/core";
-import { AngularFirestore, QueryFn } from "@angular/fire/firestore";
-import { Observable } from "rxjs";
-import { tap, distinctUntilChanged } from "rxjs/operators";
-import { environment } from "src/environments/environment";
+import { Injectable } from '@angular/core';
+import { AngularFirestore, QueryFn } from '@angular/fire/firestore';
+import { Observable } from 'rxjs';
+import { tap, distinctUntilChanged } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 import { GeoFireXService } from '../../utils/geofirex.service';
 import * as geofirex from 'geofirex';
 

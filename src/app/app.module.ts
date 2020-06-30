@@ -24,6 +24,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatSelectModule } from '@angular/material/select';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 import { AppRoutingModule } from './app-routing.module';
 
@@ -49,6 +50,9 @@ import { CountriesService } from './services/countries.service';
 import { CountryFirestore } from './services/firestore/country.firestore';
 import { LovCountriesStore } from './services/store/lov-countries.store';
 import { GeoFireXService } from './utils/geofirex.service';
+import { LovFuelTypesStore } from './services/store/lov-fuel-types.store';
+import { FuelTypesService } from './services/fuel-types.service';
+import { FuelTypeFirestore } from './services/firestore/fuel-type.firestore';
 
 
 @NgModule({
@@ -87,7 +91,8 @@ import { GeoFireXService } from './utils/geofirex.service';
     MatDialogModule,
     MatSliderModule,
     MatSelectModule,
-    MatChipsModule
+    MatChipsModule,
+    MatSlideToggleModule
   ],
   providers: [
     StationsService,
@@ -100,6 +105,9 @@ import { GeoFireXService } from './utils/geofirex.service';
     CountriesService,
     CountryFirestore,
     LovCountriesStore,
+    LovFuelTypesStore,
+    FuelTypesService,
+    FuelTypeFirestore,
     GeoFireXService
   ],
   bootstrap: [AppComponent],

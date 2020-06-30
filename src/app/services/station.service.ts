@@ -77,7 +77,7 @@ export class StationService {
                 this.store.patch({
                     loading: false,
                     station,
-                    formStatus: ''       
+                    formStatus: ''
                 }, 'station load SUCCESS');
             }),
             catchError((err) => {

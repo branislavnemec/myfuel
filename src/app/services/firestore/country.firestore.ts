@@ -5,6 +5,6 @@ import { Country } from '../../models/country';
 @Injectable()
 export class CountryFirestore extends FirestoreService<Country> {
 
-    protected basePath: string = 'countries';
+    protected basePath = 'countries';
 
 }

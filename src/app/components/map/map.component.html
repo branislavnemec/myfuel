@@ -31,9 +31,11 @@
     </map-marker>
 
     <map-circle *ngIf="position$"
+        [options]="{ draggable: circleDraggable$ | async }"
         [center]="position$ | async"
         [radius]="(mapFilter$ | async).range * 1000"
         (circleDblclick)="circleDblclick($event)"
+        (circleDragend)="circleDragend($event)"
     >
     </map-circle>
 
@@ -42,3 +44,4 @@
 <img class="map-center-button" (click)="centerMap()" width="41px" height="41px" src="assets/images/map/gps_fixed-black-48dp.svg">
 <img class="map-new-position-button" (click)="setPositionFromMapCenter()" width="41px" height="41px" src="assets/images/map/center_focus_weak-black-48dp.svg">
 <img class="map-filter-button" (click)="openMapFilter()" width="41px" height="41px" src="assets/images/map/settings-black-48dp.svg">
+<img class="map-circle-button" [ngClass]="{'map-icon-on': circleDraggable$ | async}" (click)="toggleCircleDraggable()" width="41px" height="41px" src="assets/images/map/google-circles-group.svg">

@@ -22,6 +22,14 @@
     cursor: pointer;
 }
 
+.map-circle-button {
+    position: fixed;
+    bottom: 64px + 20px;
+    left: 10px + 50px + 50px + 50px;
+    background-color: white;
+    cursor: pointer;
+}
+
 @media (max-width: 599px) {
     .map-center-button {
         bottom: 56px + 20px;
@@ -32,4 +40,11 @@
     .map-filter-button {
         bottom: 56px + 20px;
     }
+    .map-circle-button {
+        bottom: 56px + 20px;
+    }
+}
+
+.map-icon-on {
+    background-color: grey;
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { MapInfoWindow, MapMarker, GoogleMap } from '@angular/google-maps'
+import { MapInfoWindow, MapMarker, GoogleMap, MapCircle } from '@angular/google-maps'
 import { Observable, Subscription } from 'rxjs';
 import { Station } from 'src/app/models/station';
 import { MapService } from 'src/app/services/map.service';
@@ -21,6 +21,7 @@ export class MapComponent implements OnInit, OnDestroy {
 
     @ViewChild(GoogleMap, { static: false }) googleMap: GoogleMap;
     @ViewChild(MapInfoWindow, { static: false }) mapInfoWindow: MapInfoWindow;
+    @ViewChild(MapCircle, { static: false }) mapCircle: MapCircle;
 
     options: google.maps.MapOptions = {
         mapTypeId: google.maps.MapTypeId.ROADMAP,
@@ -38,6 +39,8 @@ export class MapComponent implements OnInit, OnDestroy {
     mapFilter$: Observable<MapFilter>;
     mapCenter$: Observable<google.maps.LatLngLiteral>;
     position$: Observable<google.maps.LatLngLiteral>;
+    circleDraggable$: Observable<boolean>;
+
     zoom: number = 0;
 
     infoContent = '';
@@ -56,6 +59,7 @@ export class MapComponent implements OnInit, OnDestroy {
         this.stations$ = this.mapService.stations$;
         this.mapCenter$ = this.mapService.mapCenter$;
         this.position$ = this.mapService.position$;
+        this.circleDraggable$ = this.mapService.circleDraggable$;
         this.mapZoomSubscription = this.mapService.mapZoom$.subscribe(value => {
             console.log(value);
             this.zoom = this.zoom + (value - this.zoom);
@@ -89,6 +93,10 @@ export class MapComponent implements OnInit, OnDestroy {
         this.addStation(event.latLng.toJSON().lat, event.latLng.toJSON().lng);
     }
 
+    circleDragend(event: google.maps.MouseEvent) {
+        this.mapService.setPosition({ lat: this.mapCircle.getCenter().toJSON().lat, lng: this.mapCircle.getCenter().toJSON().lng });
+    }
+
     zoomChanged() {
         setTimeout(() => {
             console.log('zoomChanged');
@@ -110,7 +118,9 @@ export class MapComponent implements OnInit, OnDestroy {
                 street: '',
                 zip: ''
             },
-            keywords: Keywords.generateKeywords(['new', ''])
+            keywords: Keywords.generateKeywords(['new', '']),
+            fuels: [],
+            prices: {}
         };
         this.mapService.create(newStation);
     }
@@ -154,6 +164,10 @@ export class MapComponent implements OnInit, OnDestroy {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.autoFocus = true;
         this.dialog.open(MapFilterDialogComponent, dialogConfig);
+    }
+
+    toggleCircleDraggable() {
+        this.mapService.toggleCircleDraggable(!this.mapCircle.getDraggable());
     }
 
 }

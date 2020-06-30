@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class StationEditDialogStore extends StoreService<StationEditDialog> {
 
-    protected store: string = 'station-edit-dialog';
+    protected store = 'station-edit-dialog';
 
     constructor() {
         super({

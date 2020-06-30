@@ -1,6 +1,6 @@
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 import { StationService } from 'src/app/services/station.service';
 import { filter, switchMap, map, tap } from 'rxjs/operators';
 import { Station } from 'src/app/models/station';
@@ -10,6 +10,9 @@ import { CountriesService } from 'src/app/services/countries.service';
 import { ObjectValidator } from 'src/app/utils/validators';
 import { GeoFireXService } from 'src/app/utils/geofirex.service';
 import { Keywords } from 'src/app/utils/keywords';
+import { FuelType } from 'src/app/models/fuel-type';
+import { FuelTypesService } from 'src/app/services/fuel-types.service';
+import { JsonUtils } from 'src/app/utils/json-utils';
 
 @Component({
     selector: 'app-station-edit-dialog',
@@ -26,22 +29,31 @@ export class StationEditDialogComponent implements OnInit, OnDestroy {
         city: new FormControl(''),
         street: new FormControl(''),
         zip: new FormControl(''),
+        fuelTypesArray: new FormArray([])
     });
 
     stationId: string;
-    
+    fuelTypes: FuelType[];
+    fuelPrices: Map<string, number>;
+
     station$: Observable<Station>;
     countriesLoading$: Observable<boolean>;
     countries$: Observable<Country[]>;
     countriesNoResults$: Observable<boolean>;
     filteredCountries$: Observable<Country[]>;
+    fuelTypesLoading$: Observable<boolean>;
+    fuelTypes$: Observable<FuelType[]>;
+    fuelTypesNoResults$: Observable<boolean>;
 
-    stationSubscription = Subscription.EMPTY;
+
+    stationSubscription1 = Subscription.EMPTY;
+    stationSubscription2 = Subscription.EMPTY;
     loadStationSubscription = Subscription.EMPTY;
 
     constructor(
         private stationService: StationService,
         private countriesService: CountriesService,
+        private fuelTypesService: FuelTypesService,
         private geoFireXService: GeoFireXService,
         private dialogRef: MatDialogRef<StationEditDialogComponent>,
         @Inject(MAT_DIALOG_DATA) data) {
@@ -57,8 +69,11 @@ export class StationEditDialogComponent implements OnInit, OnDestroy {
         this.countriesLoading$ = this.countriesService.loading$;
         this.countriesNoResults$ = this.countriesService.noResults$;
         this.countries$ = this.countriesService.countries$;
+        this.fuelTypesLoading$ = this.fuelTypesService.loading$;
+        this.fuelTypesNoResults$ = this.fuelTypesService.noResults$;
+        this.fuelTypes$ = this.fuelTypesService.fuelTypes$;
 
-        this.stationSubscription = this.station$.pipe(
+        this.stationSubscription1 = this.station$.pipe(
             filter((station: Station) => !!station),
             tap((station: Station) => {
                 this.inputForm.controls.name.setValue(station.name);
@@ -73,8 +88,31 @@ export class StationEditDialogComponent implements OnInit, OnDestroy {
                 return this.countries$.pipe(
                     tap((countries: Country[]) => {
                         if (countries.filter(country => country.id === station.address.country).length === 1) {
-                            this.inputForm.controls.country.setValue(countries.filter(country => country.id === station.address.country)[0]);
+                            this.inputForm.controls.country.setValue(
+                                countries.filter(country => country.id === station.address.country)[0]
+                            );
                         }
+                    })
+                )
+            })
+        ).subscribe();
+
+        this.stationSubscription2 = this.station$.pipe(
+            filter((station: Station) => !!station),
+            switchMap((station: Station) => {
+                return this.fuelTypes$.pipe(
+                    tap((fTypes: FuelType[]) => {
+                        this.fuelTypes = [];
+                        this.fuelPrices = JsonUtils.objectToMap(station.prices);
+                        console.log(this.fuelPrices);
+                        if ((this.inputForm.controls.fuelTypesArray as FormArray).length) {
+                            (this.inputForm.controls.fuelTypesArray as FormArray).clear();
+                        }
+                        fTypes.forEach((fuelType: FuelType) => {
+                            this.fuelTypes.push(fuelType);
+                            const control = new FormControl(station.fuels.includes(fuelType.id));
+                            (this.inputForm.controls.fuelTypesArray as FormArray).push(control);
+                        });
                     })
                 )
             })
@@ -94,7 +132,8 @@ export class StationEditDialogComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
-        this.stationSubscription.unsubscribe();
+        this.stationSubscription1.unsubscribe();
+        this.stationSubscription2.unsubscribe();
         this.loadStationSubscription.unsubscribe();
     }
 
@@ -104,22 +143,37 @@ export class StationEditDialogComponent implements OnInit, OnDestroy {
 
     submit() {
         this.inputForm.disable();
-        const position = this.geoFireXService.geoFireClient.point(Number(this.inputForm.controls.lat.value), Number(this.inputForm.controls.lng.value));
+        const pos = this.geoFireXService.geoFireClient.point(
+            Number(this.inputForm.controls.lat.value), Number(this.inputForm.controls.lng.value)
+        );
         const updatedStation: Station = {
             id: this.stationId,
             name: this.inputForm.controls.name.value.toString(),
             name_lowercase: this.inputForm.controls.name.value.toString().toLowerCase(),
             lat: Number(this.inputForm.controls.lat.value),
             lng: Number(this.inputForm.controls.lng.value),
-            position: position,
+            position: pos,
             address: {
                 country: this.inputForm.controls.country.value.id,
-                city: this.inputForm.controls.city.value,
-                street: this.inputForm.controls.street.value,
-                zip: this.inputForm.controls.zip.value
+                city: this.inputForm.controls.city.value.toString(),
+                street: this.inputForm.controls.street.value.toString(),
+                zip: this.inputForm.controls.zip.value.toString()
             },
-            keywords: Keywords.generateKeywords([this.inputForm.controls.name.value.toString(), this.inputForm.controls.city.value])
+            keywords: Keywords.generateKeywords([this.inputForm.controls.name.value.toString(),
+                this.inputForm.controls.city.value.toString()])
         }
+        const fuels = [];
+        const prices = {};
+        (this.inputForm.controls.fuelTypesArray as FormArray).controls.forEach((control, index) => {
+            console.log(index + ' ' + control.value + ' ' + this.fuelTypes[index].id);
+            if (control.value) {
+                fuels.push(this.fuelTypes[index].id);
+                prices[this.fuelTypes[index].id] =
+                this.fuelPrices.get(this.fuelTypes[index].id) ? this.fuelPrices.get(this.fuelTypes[index].id) : 0;
+            }
+        });
+        updatedStation.fuels = fuels;
+        updatedStation.prices = prices;
         this.stationService.update(updatedStation).then(
             (result) => {
                 console.log('update OK...');
