@@ -14,7 +14,7 @@ export class StationsPageStore extends StoreService<StationsPage> {
             searchInputValue: '',
             stationsFilter: {
                 country: {
-                    id: '2KVjEmyGo31uzkOIsVKN',
+                    id: 'SK',
                     name: 'Slovakia'
                 },
             },

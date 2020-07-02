@@ -90,7 +90,14 @@ export class MapComponent implements OnInit, OnDestroy {
     }
 
     circleDblclick(event: google.maps.MouseEvent) {
-        this.addStation(event.latLng.toJSON().lat, event.latLng.toJSON().lng);
+        let country = '';
+        const geocoder = new google.maps.Geocoder();
+        geocoder.geocode({ location: event.latLng }, (results, status) => {
+            if (status === google.maps.GeocoderStatus.OK) {
+                country = results.find((result) => result.types.includes('country')).address_components[0].short_name;
+            }
+            this.addStation(event.latLng.toJSON().lat, event.latLng.toJSON().lng, country);
+        });
     }
 
     circleDragend(event: google.maps.MouseEvent) {
@@ -104,7 +111,7 @@ export class MapComponent implements OnInit, OnDestroy {
         })
     }
 
-    addStation(lat: number, lng: number) {
+    addStation(lat: number, lng: number, country: string) {
         const position = this.geoFireXService.geoFireClient.point(lat, lng);
         const newStation: Station = {
             name: 'new',
@@ -113,7 +120,7 @@ export class MapComponent implements OnInit, OnDestroy {
             lng: lng,
             position: position,
             address: {
-                country: '',
+                country: country,
                 city: '',
                 street: '',
                 zip: ''
