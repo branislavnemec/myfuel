@@ -11,7 +11,8 @@ export class MapPageStore extends StoreService<MapPage> {
         super({
             stations: [],
             mapFilter: {
-                range: 5
+                range: 5,
+                fuelTypeId: 'xHNW2RWkOtIljYmfTMsg'
             },
             mapCenter: null,
             mapZoom: 14,

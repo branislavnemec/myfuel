@@ -11,6 +11,7 @@ import { MapFilterDialogComponent } from '../map-filter-dialog/map-filter-dialog
 import { GeoFireXService } from 'src/app/utils/geofirex.service';
 import { Keywords } from 'src/app/utils/keywords';
 import { ActivatedRoute } from '@angular/router';
+import { StationPricesDialogComponent } from '../station-prices-dialog/station-prices-dialog.component';
 
 @Component({
     selector: 'app-map',
@@ -70,7 +71,7 @@ export class MapComponent implements OnInit, OnDestroy {
             if (!!this.route.snapshot.queryParams.lat && !!this.route.snapshot.queryParams.lng) {
                 this.mapService.setPosition({ lat: Number(this.route.snapshot.queryParams.lat), lng: Number(this.route.snapshot.queryParams.lng) });
                 this.mapService.setMapCenter({ lat: Number(this.route.snapshot.queryParams.lat), lng: Number(this.route.snapshot.queryParams.lng) });
-                this.mapService.setMapZoom(15);
+                this.mapService.setMapZoom(14);
             } else if (!center) {
                 navigator.geolocation.getCurrentPosition((position) => {
                     this.mapService.setPosition({ lat: position.coords.latitude, lng: position.coords.longitude });
@@ -146,19 +147,27 @@ export class MapComponent implements OnInit, OnDestroy {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.disableClose = true;
         dialogConfig.autoFocus = true;
-
         dialogConfig.data = {
             id: this.infoContentId
         };
-
         this.dialog.open(StationEditDialogComponent, dialogConfig);
+    }
+
+    editPrices() {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.disableClose = true;
+        dialogConfig.autoFocus = true;
+        dialogConfig.data = {
+            id: this.infoContentId
+        };
+        this.dialog.open(StationPricesDialogComponent, dialogConfig);
     }
 
     centerMap() {
         navigator.geolocation.getCurrentPosition((position) => {
             this.mapService.setPosition({ lat: position.coords.latitude, lng: position.coords.longitude });
             this.mapService.setMapCenter({ lat: position.coords.latitude, lng: position.coords.longitude });
-            this.mapService.setMapZoom(15);
+            this.mapService.setMapZoom(14);
         });
     }
 

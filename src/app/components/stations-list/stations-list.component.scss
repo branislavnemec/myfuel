@@ -27,6 +27,11 @@ td.name-column {
     padding-left: 10px !important;
 }
 
+td.price-column {
+    min-width: 30px;
+    padding-right: 0px !important;
+  }
+  
 td.action-column {
   min-width: 120px;
   padding-right: 0px !important;

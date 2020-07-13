@@ -12,7 +12,7 @@
         #markerElem
         *ngFor="let station of stations$ | async"
         [position]="{lat: station.lat, lng: station.lng}"
-        [label]="station.name"
+        [label]="station.name + ' ' + (station.fuels.length > 0 && station.prices[(mapFilter$ | async).fuelTypeId] ? station.prices[(mapFilter$ | async).fuelTypeId].price : '')"
         [title]="station.name"
         (mapClick)="openInfo(markerElem, station)"
     >
@@ -20,6 +20,7 @@
 
     <map-info-window>
         {{ infoContent }}<br>
+        <a (click)="editPrices()">prices</a>&nbsp;
         <a (click)="editStation()">edit</a>&nbsp;
         <a (click)="deleteStation()">delete</a>&nbsp;
     </map-info-window>

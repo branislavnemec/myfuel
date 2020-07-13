@@ -13,10 +13,8 @@ export class StationsPageStore extends StoreService<StationsPage> {
             stations: [],
             searchInputValue: '',
             stationsFilter: {
-                country: {
-                    id: 'SK',
-                    name: 'Slovakia'
-                },
+                countryId: 'SK',
+                fuelTypeId: 'xHNW2RWkOtIljYmfTMsg'
             },
         });
     }

@@ -1,5 +1,4 @@
-import { Country } from './country';
-
 export interface StationsFilter {
-    country: Country;
+    countryId: string;
+    fuelTypeId: string;
 }

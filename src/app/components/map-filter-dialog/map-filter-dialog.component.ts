@@ -4,6 +4,8 @@ import { tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { MapService } from 'src/app/services/map.service';
 import { MapFilter } from 'src/app/models/map-filter';
+import { FuelType } from 'src/app/models/fuel-type';
+import { FuelTypesService } from 'src/app/services/fuel-types.service';
 
 @Component({
     selector: 'app-map-filter-dialog',
@@ -12,18 +14,29 @@ import { MapFilter } from 'src/app/models/map-filter';
 })
 export class MapFilterDialogComponent implements OnInit, OnDestroy {
 
-    range: number;
+    selectedRange: number;
+    selectedFuelTypeId: string;
+
     mapFilter$: Observable<MapFilter>;
+    fuelTypesLoading$: Observable<boolean>;
+    fuelTypes$: Observable<FuelType[]>;
+    fuelTypesNoResults$: Observable<boolean>;
 
     constructor(
         private mapService: MapService,
+        private fuelTypesService: FuelTypesService,
         private dialogRef: MatDialogRef<MapFilterDialogComponent>) {
     }
 
     ngOnInit() {
+        this.fuelTypesLoading$ = this.fuelTypesService.loading$;
+        this.fuelTypesNoResults$ = this.fuelTypesService.noResults$;
+        this.fuelTypes$ = this.fuelTypesService.fuelTypes$;
+
         this.mapFilter$ = this.mapService.mapFilter$.pipe(
             tap((mapFilter: MapFilter) => {
-                this.range = mapFilter.range;
+                this.selectedRange = mapFilter.range;
+                this.selectedFuelTypeId = mapFilter.fuelTypeId;
             })
         );
     }
@@ -32,7 +45,7 @@ export class MapFilterDialogComponent implements OnInit, OnDestroy {
     }
 
     rangeChange(event) {
-        this.range = event.value;
+        this.selectedRange = event.value;
     }
 
     close() {
@@ -41,10 +54,15 @@ export class MapFilterDialogComponent implements OnInit, OnDestroy {
 
     submit() {
         const newMapFilter: MapFilter = {
-            range: this.range
+            range: this.selectedRange,
+            fuelTypeId: this.selectedFuelTypeId
         }
         this.mapService.setMapFilter(newMapFilter);
         this.dialogRef.close();
+    }
+
+    fuelTypeChange(event) {
+        this.selectedFuelTypeId = event.value;
     }
 
 }

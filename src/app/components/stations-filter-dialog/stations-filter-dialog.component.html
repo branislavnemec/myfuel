@@ -7,13 +7,27 @@
       
             <mat-form-field>
                 <mat-label>Country</mat-label>
-                <mat-select [value]="(stationsFilter$ | async).country.id" (selectionChange)="selectionChange($event)">
+                <mat-select [value]="(stationsFilter$ | async).countryId" (selectionChange)="countryChange($event)">
                     <mat-option [value]="country.id" *ngFor="let country of countries$ | async">{{ country.name }}</mat-option>
                 </mat-select>
             </mat-form-field>
 
         </mat-card-content>
     </mat-card>
+
+    <mat-card>
+        <mat-card-content>
+      
+            <mat-form-field>
+                <mat-label>Fuel type</mat-label>
+                <mat-select [value]="(stationsFilter$ | async).fuelTypeId" (selectionChange)="fuelTypeChange($event)">
+                    <mat-option [value]="ft.id" *ngFor="let ft of fuelTypes$ | async">{{ ft.name }}</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+        </mat-card-content>
+    </mat-card>
+
 
 </mat-dialog-content>
 

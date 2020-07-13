@@ -6,6 +6,8 @@ import { StationsService } from 'src/app/services/stations.service';
 import { StationsFilter } from 'src/app/models/stations-filter';
 import { Country } from 'src/app/models/country';
 import { CountriesService } from 'src/app/services/countries.service';
+import { FuelType } from 'src/app/models/fuel-type';
+import { FuelTypesService } from 'src/app/services/fuel-types.service';
 
 @Component({
     selector: 'app-stations-filter-dialog',
@@ -15,16 +17,20 @@ import { CountriesService } from 'src/app/services/countries.service';
 export class StationsFilterDialogComponent implements OnInit, OnDestroy {
 
     selectedCountryId: string;
-    selectedCountryName: string;
+    selectedFuelTypeId: string;
 
     stationsFilter$: Observable<StationsFilter>;
     countriesLoading$: Observable<boolean>;
     countries$: Observable<Country[]>;
     countriesNoResults$: Observable<boolean>;
+    fuelTypesLoading$: Observable<boolean>;
+    fuelTypes$: Observable<FuelType[]>;
+    fuelTypesNoResults$: Observable<boolean>;
 
     constructor(
         private stationsService: StationsService,
         private countriesService: CountriesService,
+        private fuelTypesService: FuelTypesService,
         private dialogRef: MatDialogRef<StationsFilterDialogComponent>) {
     }
 
@@ -32,11 +38,14 @@ export class StationsFilterDialogComponent implements OnInit, OnDestroy {
         this.countriesLoading$ = this.countriesService.loading$;
         this.countriesNoResults$ = this.countriesService.noResults$;
         this.countries$ = this.countriesService.countries$;
+        this.fuelTypesLoading$ = this.fuelTypesService.loading$;
+        this.fuelTypesNoResults$ = this.fuelTypesService.noResults$;
+        this.fuelTypes$ = this.fuelTypesService.fuelTypes$;
 
         this.stationsFilter$ = this.stationsService.stationsFilter$.pipe(
             tap((stationsFilter: StationsFilter) => {
-                this.selectedCountryId = stationsFilter.country.id;
-                this.selectedCountryName = stationsFilter.country.name;
+                this.selectedCountryId = stationsFilter.countryId;
+                this.selectedFuelTypeId = stationsFilter.fuelTypeId;
             })
         );
     }
@@ -50,17 +59,19 @@ export class StationsFilterDialogComponent implements OnInit, OnDestroy {
 
     submit() {
         const newStationsFilter: StationsFilter = {
-            country: {
-                id: this.selectedCountryId,
-                name: this.selectedCountryName
-            }
+            countryId: this.selectedCountryId,
+            fuelTypeId: this.selectedFuelTypeId
         }
         this.stationsService.setStationsFilter(newStationsFilter);
         this.dialogRef.close();
     }
 
-    selectionChange(event) {
+    countryChange(event) {
         this.selectedCountryId = event.value;
-        this.selectedCountryName = event.source.selected.viewValue;
     }
+
+    fuelTypeChange(event) {
+        this.selectedFuelTypeId = event.value;
+    }
+
 }

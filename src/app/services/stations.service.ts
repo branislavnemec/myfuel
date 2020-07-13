@@ -19,15 +19,16 @@ export class StationsService {
                     switchMap((stationsFilter: StationsFilter) => {
                         return this.firestore.collection$(ref => {
                             return ref
-                                    .where('address.country', '==', stationsFilter.country.id)
+                                    .where('address.country', '==', stationsFilter.countryId)
+                                    .where('prices.' + stationsFilter.fuelTypeId + '.price', '>', 0)
                                     .where('keywords', 'array-contains', searchInputValue.toLowerCase())
-                                    .orderBy('name_lowercase')
+                                    .orderBy('prices.' + stationsFilter.fuelTypeId + '.price')
                                     .limit(50);
                         }).pipe(
                             tap(stations => {
                                 this.store.patch({
                                     loading: false,
-                                    stations,        
+                                    stations,
                                 }, 'stations collection subscription');
                             })
                         );
@@ -79,7 +80,7 @@ export class StationsService {
     get stationsFilter$(): Observable<StationsFilter> {
         return this.store.state$.pipe(
             map(state => state.stationsFilter),
-            distinctUntilChanged()
+            distinctUntilChanged((prev, curr) => prev.countryId === curr.countryId && prev.fuelTypeId === curr.fuelTypeId),
         );
     }
 
@@ -118,7 +119,17 @@ export class StationsService {
     }
 
     setStationsFilter(stationsFilter: StationsFilter) {
-        this.store.patch({ stationsFilter: stationsFilter }, 'stations filter set');
+        if (this.store.previous.stationsFilter.countryId === stationsFilter.countryId &&
+            this.store.previous.stationsFilter.fuelTypeId === stationsFilter.fuelTypeId) {
+                // do not patch the store
+
+            } else {
+                this.store.patch({
+                    loading: true,
+                    stations: [],
+                    stationsFilter: stationsFilter
+                }, 'stations filter set');
+            }
     }
 
 }

@@ -1,5 +1,5 @@
 import { Station } from '../../models/station';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { StationsService } from '../../services/stations.service';
 import { MatDialogConfig, MatDialog } from '@angular/material/dialog';
@@ -9,21 +9,26 @@ import { tap, first, debounceTime } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { StationsFilterDialogComponent } from '../stations-filter-dialog/stations-filter-dialog.component';
 import { StationsFilter } from 'src/app/models/stations-filter';
+import { FuelTypesService } from 'src/app/services/fuel-types.service';
+import { FuelType } from 'src/app/models/fuel-type';
 
 @Component({
     selector: 'app-stations-list',
     templateUrl: './stations-list.component.html',
     styleUrls: ['./stations-list.component.scss']
 })
-export class StationsListComponent implements OnInit {
+export class StationsListComponent implements OnInit, OnDestroy {
 
     loading$: Observable<boolean>;
     stations$: Observable<Station[]>;
     noResults$: Observable<boolean>;
     searchInputValue$: Observable<string>;
     stationsFilter$: Observable<StationsFilter>;
+    fuelTypesLoading$: Observable<boolean>;
+    fuelTypes$: Observable<FuelType[]>;
+    fuelTypesNoResults$: Observable<boolean>;
 
-    displayedColumns: string[] = ['name', 'action'];
+    displayedColumns: string[] = ['name', 'price', 'action'];
     searchInputControl: FormControl = new FormControl();
 
     searchInputValueSubscription = Subscription.EMPTY;
@@ -31,6 +36,7 @@ export class StationsListComponent implements OnInit {
 
     constructor(
         private stationsService: StationsService,
+        private fuelTypesService: FuelTypesService,
         private router: Router,
         private dialog: MatDialog
     ) {}
@@ -41,6 +47,9 @@ export class StationsListComponent implements OnInit {
         this.stations$ = this.stationsService.stations$;
         this.searchInputValue$ = this.stationsService.searchInputValue$;
         this.stationsFilter$ = this.stationsService.stationsFilter$;
+        this.fuelTypesLoading$ = this.fuelTypesService.loading$;
+        this.fuelTypesNoResults$ = this.fuelTypesService.noResults$;
+        this.fuelTypes$ = this.fuelTypesService.fuelTypes$;
 
         this.searchInputValueSubscription = this.searchInputValue$.pipe(
             first(),
@@ -68,11 +77,11 @@ export class StationsListComponent implements OnInit {
 
         dialogConfig.disableClose = true;
         dialogConfig.autoFocus = true;
-    
+
         dialogConfig.data = {
             id: station.id
         };
-    
+
         this.dialog.open(StationEditDialogComponent, dialogConfig);
     }
 
@@ -88,6 +97,10 @@ export class StationsListComponent implements OnInit {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.autoFocus = true;
         this.dialog.open(StationsFilterDialogComponent, dialogConfig);
+    }
+
+    findFuelName(fuelId: string, fuelTypes: FuelType[]) {
+        return fuelTypes.find((ft) => ft.id === fuelId) ? fuelTypes.find((ft) => ft.id === fuelId).name : '';
     }
 
 }

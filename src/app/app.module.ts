@@ -38,6 +38,7 @@ import { StationsFormComponent } from './components/stations-form/stations-form.
 import { StationsFilterDialogComponent } from './components/stations-filter-dialog/stations-filter-dialog.component';
 import { StationEditDialogComponent } from './components/station-edit-dialog/station-edit-dialog.component';
 import { MapFilterDialogComponent } from './components/map-filter-dialog/map-filter-dialog.component';
+import { StationPricesDialogComponent } from './components/station-prices-dialog/station-prices-dialog.component';
 
 import { StationsService } from './services/stations.service';
 import { StationFirestore } from './services/firestore/station.firestore';
@@ -63,6 +64,7 @@ import { FuelTypeFirestore } from './services/firestore/fuel-type.firestore';
     StationsListComponent,
     StationsFormComponent,
     StationEditDialogComponent,
+    StationPricesDialogComponent,
     StationsFilterDialogComponent,
     MapFilterDialogComponent
   ],
@@ -113,6 +115,7 @@ import { FuelTypeFirestore } from './services/firestore/fuel-type.firestore';
   bootstrap: [AppComponent],
   entryComponents: [
     StationEditDialogComponent,
+    StationPricesDialogComponent,
     StationsFilterDialogComponent,
     MapFilterDialogComponent
   ]

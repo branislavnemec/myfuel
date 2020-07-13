@@ -4,19 +4,33 @@
 
     <mat-card>
         <mat-card-content>
-            <h3>Range (km)</h3>
+            <h4>Range (km)</h4>
       
             <mat-slider
-                [max]="15"
-                [min]="5"
-                [step]="5"
-                [thumbLabel]="true"
+                max="15"
+                min="5"
+                step="5"
+                thumbLabel="true"
                 [value]="(mapFilter$ | async).range"
                 (change)="rangeChange($event)">
             </mat-slider>
 
         </mat-card-content>
     </mat-card>
+
+    <mat-card>
+        <mat-card-content>
+      
+            <mat-form-field>
+                <mat-label>Fuel type</mat-label>
+                <mat-select [value]="(mapFilter$ | async).fuelTypeId" (selectionChange)="fuelTypeChange($event)">
+                    <mat-option [value]="ft.id" *ngFor="let ft of fuelTypes$ | async">{{ ft.name }}</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+        </mat-card-content>
+    </mat-card>
+
 
 </mat-dialog-content>
 

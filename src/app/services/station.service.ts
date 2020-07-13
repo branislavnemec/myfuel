@@ -57,7 +57,7 @@ export class StationService {
                     loading: false,
                     formStatus: 'Saved!'
                 }, 'station update SUCCESS');
-            }, 
+            },
             (err) => {
                 this.store.patch({
                     loading: false,

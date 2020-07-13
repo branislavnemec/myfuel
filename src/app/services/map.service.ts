@@ -2,7 +2,7 @@ import { StationFirestore } from './firestore/station.firestore';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Station } from '../models/station';
-import { tap, map, distinctUntilChanged, filter } from 'rxjs/operators';
+import { tap, map, distinctUntilChanged, filter, distinctUntilKeyChanged } from 'rxjs/operators';
 import { MapPageStore } from './store/map-page.store';
 import { MapFilter } from '../models/map-filter';
 import { switchMap } from 'rxjs/operators';
@@ -20,6 +20,7 @@ export class MapService {
             filter((position: google.maps.LatLngLiteral) => !!position),
             switchMap((position: google.maps.LatLngLiteral) => {
                 return this.mapFilter$.pipe(
+                    distinctUntilKeyChanged('range'),
                     switchMap((mapFilter: MapFilter) => {
                         console.log('call geoQuery.........');
                         return this.firestore.geoCollection$(this.geoFireXService.geoFireClient.point(position.lat, position.lng), mapFilter.range, 'position').pipe(

@@ -13,6 +13,7 @@ import { Keywords } from 'src/app/utils/keywords';
 import { FuelType } from 'src/app/models/fuel-type';
 import { FuelTypesService } from 'src/app/services/fuel-types.service';
 import { JsonUtils } from 'src/app/utils/json-utils';
+import { FuelPrice } from 'src/app/models/fuel-price';
 
 @Component({
     selector: 'app-station-edit-dialog',
@@ -34,7 +35,7 @@ export class StationEditDialogComponent implements OnInit, OnDestroy {
 
     stationId: string;
     fuelTypes: FuelType[];
-    fuelPrices: Map<string, number>;
+    fuelPrices: Map<string, FuelPrice>;
 
     station$: Observable<Station>;
     countriesLoading$: Observable<boolean>;
@@ -169,7 +170,8 @@ export class StationEditDialogComponent implements OnInit, OnDestroy {
             if (control.value) {
                 fuels.push(this.fuelTypes[index].id);
                 prices[this.fuelTypes[index].id] =
-                this.fuelPrices.get(this.fuelTypes[index].id) ? this.fuelPrices.get(this.fuelTypes[index].id) : 0;
+                this.fuelPrices.get(this.fuelTypes[index].id) ?
+                    this.fuelPrices.get(this.fuelTypes[index].id) : { price: 0, date: new Date().toUTCString() };
             }
         });
         updatedStation.fuels = fuels;
