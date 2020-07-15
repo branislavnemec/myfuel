@@ -1,16 +1,31 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>MyFuel</title>
-  <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCol1oqBmV2lP7YWPmxXYdzu9cL5tPv9cY"></script>
+    <meta charset="utf-8">
+    <title>MyFuel</title>
+    <base href="/">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCol1oqBmV2lP7YWPmxXYdzu9cL5tPv9cY"></script>
+    <script>
+        window.addEventListener = function () {
+          (window.EventTarget || Window).prototype.addEventListener.apply(this, arguments);
+        };
+        window.removeEventListener = function () {
+          (window.EventTarget || Window).prototype.removeEventListener.apply(this, arguments);
+        };
+        document.addEventListener = function () {
+          (window.EventTarget || Document).prototype.addEventListener.apply(this, arguments);
+        };
+        document.removeEventListener = function () {
+          (window.EventTarget || Document).prototype.removeEventListener.apply(this, arguments);
+        };
+    </script>
+    <script type="text/javascript" src="cordova.js"></script>
 </head>
 <body class="mat-typography">
-  <app-root></app-root>
+    <app-root></app-root>
 </body>
 </html>

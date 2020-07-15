@@ -2,7 +2,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 import { StationService } from 'src/app/services/station.service';
-import { filter, switchMap, map, tap } from 'rxjs/operators';
+import { filter, switchMap, map, tap, first } from 'rxjs/operators';
 import { Station } from 'src/app/models/station';
 import { Observable, Subscription } from 'rxjs';
 import { GeoFireXService } from 'src/app/utils/geofirex.service';
@@ -10,6 +10,7 @@ import { FuelType } from 'src/app/models/fuel-type';
 import { FuelTypesService } from 'src/app/services/fuel-types.service';
 import { JsonUtils } from 'src/app/utils/json-utils';
 import { FuelPrice } from 'src/app/models/fuel-price';
+import { BackButtonService } from 'src/app/utils/back-button.service';
 
 @Component({
     selector: 'app-station-prices-dialog',
@@ -39,11 +40,20 @@ export class StationPricesDialogComponent implements OnInit, OnDestroy {
     constructor(
         private stationService: StationService,
         private fuelTypesService: FuelTypesService,
+        private backButtonService: BackButtonService,
         private dialogRef: MatDialogRef<StationPricesDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) data) {
+        @Inject(MAT_DIALOG_DATA) data
+    ) {
+        dialogRef.afterClosed()
+            .pipe(
+                first(),
+                tap(() => this.backButtonService.resetDefaultHandler())
+            ).subscribe();
+        this.backButtonService.setCustomHandler(() => {
+            dialogRef.close();
+        });
 
         this.stationId = data.id;
-
         this.loadStationSubscription = this.stationService.loadStation(this.stationId).pipe(
         ).subscribe();
     }

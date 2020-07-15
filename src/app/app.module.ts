@@ -54,70 +54,74 @@ import { GeoFireXService } from './utils/geofirex.service';
 import { LovFuelTypesStore } from './services/store/lov-fuel-types.store';
 import { FuelTypesService } from './services/fuel-types.service';
 import { FuelTypeFirestore } from './services/firestore/fuel-type.firestore';
+import { BackButtonService } from './utils/back-button.service';
 
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    MapComponent,
-    StationsPageComponent,
-    StationsListComponent,
-    StationsFormComponent,
-    StationEditDialogComponent,
-    StationPricesDialogComponent,
-    StationsFilterDialogComponent,
-    MapFilterDialogComponent
-  ],
-  imports: [
-    BrowserModule,
-    AngularFireModule.initializeApp(environment.firebaseConfig),
-    AngularFirestoreModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    GoogleMapsModule,
-    MatSidenavModule,
-    MatButtonModule,
-    MatIconModule,
-    MatGridListModule,
-    MatCardModule,
-    MatToolbarModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSnackBarModule,
-    MatAutocompleteModule,
-    MatMenuModule,
-    MatListModule,
-    MatExpansionModule,
-    MatTableModule,
-    ReactiveFormsModule,
-    MatDialogModule,
-    MatSliderModule,
-    MatSelectModule,
-    MatChipsModule,
-    MatSlideToggleModule
-  ],
-  providers: [
-    StationsService,
-    StationFirestore,
-    StationsPageStore,
-    MapService,
-    MapPageStore,
-    StationService,
-    StationEditDialogStore,
-    CountriesService,
-    CountryFirestore,
-    LovCountriesStore,
-    LovFuelTypesStore,
-    FuelTypesService,
-    FuelTypeFirestore,
-    GeoFireXService
-  ],
-  bootstrap: [AppComponent],
-  entryComponents: [
-    StationEditDialogComponent,
-    StationPricesDialogComponent,
-    StationsFilterDialogComponent,
-    MapFilterDialogComponent
-  ]
+    declarations: [
+        AppComponent,
+        MapComponent,
+        StationsPageComponent,
+        StationsListComponent,
+        StationsFormComponent,
+        StationEditDialogComponent,
+        StationPricesDialogComponent,
+        StationsFilterDialogComponent,
+        MapFilterDialogComponent
+    ],
+    imports: [
+        BrowserModule,
+        AngularFireModule.initializeApp(environment.firebaseConfig),
+        AngularFirestoreModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        GoogleMapsModule,
+        MatSidenavModule,
+        MatButtonModule,
+        MatIconModule,
+        MatGridListModule,
+        MatCardModule,
+        MatToolbarModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatSnackBarModule,
+        MatAutocompleteModule,
+        MatMenuModule,
+        MatListModule,
+        MatExpansionModule,
+        MatTableModule,
+        ReactiveFormsModule,
+        MatDialogModule,
+        MatSliderModule,
+        MatSelectModule,
+        MatChipsModule,
+        MatSlideToggleModule
+    ],
+    providers: [
+        StationsService,
+        StationFirestore,
+        StationsPageStore,
+        MapService,
+        MapPageStore,
+        StationService,
+        StationEditDialogStore,
+        CountriesService,
+        CountryFirestore,
+        LovCountriesStore,
+        LovFuelTypesStore,
+        FuelTypesService,
+        FuelTypeFirestore,
+        GeoFireXService,
+        BackButtonService
+    ],
+    bootstrap: [
+        AppComponent
+    ],
+    entryComponents: [
+        StationEditDialogComponent,
+        StationPricesDialogComponent,
+        StationsFilterDialogComponent,
+        MapFilterDialogComponent
+    ]
 })
 export class AppModule { }

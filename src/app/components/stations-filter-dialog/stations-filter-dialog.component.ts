@@ -1,6 +1,6 @@
 import { MatDialogRef } from '@angular/material/dialog';
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { tap } from 'rxjs/operators';
+import { tap, first } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { StationsService } from 'src/app/services/stations.service';
 import { StationsFilter } from 'src/app/models/stations-filter';
@@ -8,6 +8,7 @@ import { Country } from 'src/app/models/country';
 import { CountriesService } from 'src/app/services/countries.service';
 import { FuelType } from 'src/app/models/fuel-type';
 import { FuelTypesService } from 'src/app/services/fuel-types.service';
+import { BackButtonService } from 'src/app/utils/back-button.service';
 
 @Component({
     selector: 'app-stations-filter-dialog',
@@ -31,7 +32,17 @@ export class StationsFilterDialogComponent implements OnInit, OnDestroy {
         private stationsService: StationsService,
         private countriesService: CountriesService,
         private fuelTypesService: FuelTypesService,
-        private dialogRef: MatDialogRef<StationsFilterDialogComponent>) {
+        private dialogRef: MatDialogRef<StationsFilterDialogComponent>,
+        private backButtonService: BackButtonService
+    ) {
+        dialogRef.afterClosed()
+            .pipe(
+                first(),
+                tap(() => this.backButtonService.resetDefaultHandler())
+            ).subscribe();
+        this.backButtonService.setCustomHandler(() => {
+            dialogRef.close();
+        });
     }
 
     ngOnInit() {

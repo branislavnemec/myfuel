@@ -1,11 +1,12 @@
 import { MatDialogRef } from '@angular/material/dialog';
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { tap } from 'rxjs/operators';
+import { tap, first } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { MapService } from 'src/app/services/map.service';
 import { MapFilter } from 'src/app/models/map-filter';
 import { FuelType } from 'src/app/models/fuel-type';
 import { FuelTypesService } from 'src/app/services/fuel-types.service';
+import { BackButtonService } from 'src/app/utils/back-button.service';
 
 @Component({
     selector: 'app-map-filter-dialog',
@@ -25,7 +26,17 @@ export class MapFilterDialogComponent implements OnInit, OnDestroy {
     constructor(
         private mapService: MapService,
         private fuelTypesService: FuelTypesService,
-        private dialogRef: MatDialogRef<MapFilterDialogComponent>) {
+        private dialogRef: MatDialogRef<MapFilterDialogComponent>,
+        private backButtonService: BackButtonService
+    ) {
+        dialogRef.afterClosed()
+            .pipe(
+                first(),
+                tap(() => this.backButtonService.resetDefaultHandler())
+            ).subscribe();
+        this.backButtonService.setCustomHandler(() => {
+            dialogRef.close();
+        });
     }
 
     ngOnInit() {
