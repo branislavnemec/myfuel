@@ -9,12 +9,12 @@
 >
 
     <map-marker
-        #markerElem
+        #marker="mapMarker"
         *ngFor="let station of stations$ | async"
         [position]="{lat: station.lat, lng: station.lng}"
         [label]="station.name + ' ' + (station.fuels.length > 0 && station.prices[(mapFilter$ | async).fuelTypeId] ? station.prices[(mapFilter$ | async).fuelTypeId].price : '')"
         [title]="station.name"
-        (mapClick)="openInfo(markerElem, station)"
+        (mapClick)="openInfo(marker, station)"
     >
     </map-marker>
 

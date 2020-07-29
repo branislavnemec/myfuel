@@ -33,7 +33,7 @@
             <th mat-header-cell *matHeaderCellDef>Name</th>
             <td mat-cell *matCellDef="let station" class="name-column">
                 <p><b>{{station.name}}</b></p>
-                <p class="font-10">{{station.address.city ? station.address.city + ',' : ''}} {{station.address.street}}</p>
+                <p class="font-10">{{station.address.city ? station.address.city : ''}}{{station.address.street ? ', ' + station.address.street : ''}}</p>
                 <p class="font-10">{{station.address.zip ? station.address.zip : ''}}</p>
             </td>
         </ng-container>
