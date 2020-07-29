@@ -11,6 +11,7 @@ import { StationsFilterDialogComponent } from '../stations-filter-dialog/station
 import { StationsFilter } from 'src/app/models/stations-filter';
 import { FuelTypesService } from 'src/app/services/fuel-types.service';
 import { FuelType } from 'src/app/models/fuel-type';
+import { StationPricesDialogComponent } from '../station-prices-dialog/station-prices-dialog.component';
 
 @Component({
     selector: 'app-stations-list',
@@ -74,15 +75,22 @@ export class StationsListComponent implements OnInit, OnDestroy {
 
     editStation(station: Station) {
         const dialogConfig = new MatDialogConfig();
-
         dialogConfig.disableClose = true;
         dialogConfig.autoFocus = true;
-
         dialogConfig.data = {
             id: station.id
         };
-
         this.dialog.open(StationEditDialogComponent, dialogConfig);
+    }
+
+    editPrices(station: Station) {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.disableClose = true;
+        dialogConfig.autoFocus = true;
+        dialogConfig.data = {
+            id: station.id
+        };
+        this.dialog.open(StationPricesDialogComponent, dialogConfig);
     }
 
     deleteStation(station: Station) {

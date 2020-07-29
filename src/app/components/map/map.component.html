@@ -19,10 +19,14 @@
     </map-marker>
 
     <map-info-window>
-        {{ infoContent }}<br>
-        <a (click)="editPrices()">prices</a>&nbsp;
-        <a (click)="editStation()">edit</a>&nbsp;
-        <a (click)="deleteStation()">delete</a>&nbsp;
+        <b>{{ selectedStation?.name }}</b><br>
+        {{ selectedStation?.address.street }}<br *ngIf="selectedStation?.address.street">
+        {{ selectedStation?.address.city }}<br *ngIf="selectedStation?.address.city">
+        {{ selectedStation?.address.zip }}<br *ngIf="selectedStation?.address.zip">
+        <br>
+        <a (click)="editPrices()"><mat-icon>attach_money</mat-icon></a>
+        <a (click)="editStation()"><mat-icon>edit</mat-icon></a>
+        <a (click)="deleteStation()"><mat-icon>delete</mat-icon></a>
     </map-info-window>
 
     <map-marker *ngIf="position$"

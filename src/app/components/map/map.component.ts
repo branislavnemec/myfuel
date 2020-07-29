@@ -42,10 +42,8 @@ export class MapComponent implements OnInit, OnDestroy {
     position$: Observable<google.maps.LatLngLiteral>;
     circleDraggable$: Observable<boolean>;
 
-    zoom: number = 0;
-
-    infoContent = '';
-    infoContentId = '';
+    zoom = 0;
+    selectedStation: Station;
 
     mapZoomSubscription = Subscription.EMPTY;
 
@@ -134,13 +132,12 @@ export class MapComponent implements OnInit, OnDestroy {
     }
 
     openInfo(marker: MapMarker, station: Station) {
-        this.infoContentId = station.id;
-        this.infoContent = station.name;
+        this.selectedStation = station;
         this.mapInfoWindow.open(marker);
     }
 
     deleteStation() {
-        this.mapService.delete(this.infoContentId);
+        this.mapService.delete(this.selectedStation.id);
     }
 
     editStation() {
@@ -148,7 +145,7 @@ export class MapComponent implements OnInit, OnDestroy {
         dialogConfig.disableClose = true;
         dialogConfig.autoFocus = true;
         dialogConfig.data = {
-            id: this.infoContentId
+            id: this.selectedStation.id
         };
         this.dialog.open(StationEditDialogComponent, dialogConfig);
     }
@@ -158,7 +155,7 @@ export class MapComponent implements OnInit, OnDestroy {
         dialogConfig.disableClose = true;
         dialogConfig.autoFocus = true;
         dialogConfig.data = {
-            id: this.infoContentId
+            id: this.selectedStation.id
         };
         this.dialog.open(StationPricesDialogComponent, dialogConfig);
     }
