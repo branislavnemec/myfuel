@@ -12,6 +12,7 @@ import { StationsFilter } from 'src/app/models/stations-filter';
 import { FuelTypesService } from 'src/app/services/fuel-types.service';
 import { FuelType } from 'src/app/models/fuel-type';
 import { StationPricesDialogComponent } from '../station-prices-dialog/station-prices-dialog.component';
+import { YesNoDialogComponent } from '../yes-no-dialog/yes-no-dialog.component';
 
 @Component({
     selector: 'app-stations-list',
@@ -94,7 +95,20 @@ export class StationsListComponent implements OnInit, OnDestroy {
     }
 
     deleteStation(station: Station) {
-        this.stationsService.delete(station.id);
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.autoFocus = true;
+        dialogConfig.data = {
+            text: 'Really delete station?'
+        };
+        const dialogRef = this.dialog.open(YesNoDialogComponent, dialogConfig);
+        dialogRef.afterClosed().pipe(
+            first(),
+            tap((result) => {
+                if (result === 'yes') {
+                    this.stationsService.delete(station.id);
+                }
+            })
+        ).subscribe();
     }
 
     goToMap(station: Station) {
@@ -111,4 +125,8 @@ export class StationsListComponent implements OnInit, OnDestroy {
         return fuelTypes.find((ft) => ft.id === fuelId) ? fuelTypes.find((ft) => ft.id === fuelId).name : '';
     }
 
+    toTimestamp(isodate: string) {
+        const date = new Date(isodate);
+        return date.getTime();
+    }
 }

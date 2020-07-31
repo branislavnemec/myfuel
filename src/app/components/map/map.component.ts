@@ -6,12 +6,13 @@ import { MapService } from 'src/app/services/map.service';
 import { MatDialogConfig, MatDialog } from '@angular/material/dialog';
 import { StationEditDialogComponent } from '../station-edit-dialog/station-edit-dialog.component';
 import { MapFilter } from 'src/app/models/map-filter';
-import { first } from 'rxjs/operators';
+import { first, tap } from 'rxjs/operators';
 import { MapFilterDialogComponent } from '../map-filter-dialog/map-filter-dialog.component';
 import { GeoFireXService } from 'src/app/utils/geofirex.service';
 import { Keywords } from 'src/app/utils/keywords';
 import { ActivatedRoute } from '@angular/router';
 import { StationPricesDialogComponent } from '../station-prices-dialog/station-prices-dialog.component';
+import { YesNoDialogComponent } from '../yes-no-dialog/yes-no-dialog.component';
 
 @Component({
     selector: 'app-map',
@@ -34,7 +35,7 @@ export class MapComponent implements OnInit, OnDestroy {
         scaleControl: true,
         maxZoom: 17,
         minZoom: 8,
-    }
+    };
 
     stations$: Observable<Station[]>;
     mapFilter$: Observable<MapFilter>;
@@ -67,8 +68,10 @@ export class MapComponent implements OnInit, OnDestroy {
             first()
         ).subscribe((center) => {
             if (!!this.route.snapshot.queryParams.lat && !!this.route.snapshot.queryParams.lng) {
-                this.mapService.setPosition({ lat: Number(this.route.snapshot.queryParams.lat), lng: Number(this.route.snapshot.queryParams.lng) });
-                this.mapService.setMapCenter({ lat: Number(this.route.snapshot.queryParams.lat), lng: Number(this.route.snapshot.queryParams.lng) });
+                this.mapService.setPosition({ lat: Number(this.route.snapshot.queryParams.lat),
+                                              lng: Number(this.route.snapshot.queryParams.lng) });
+                this.mapService.setMapCenter({ lat: Number(this.route.snapshot.queryParams.lat),
+                                               lng: Number(this.route.snapshot.queryParams.lng) });
                 this.mapService.setMapZoom(14);
             } else if (!center) {
                 navigator.geolocation.getCurrentPosition((position) => {
@@ -137,7 +140,20 @@ export class MapComponent implements OnInit, OnDestroy {
     }
 
     deleteStation() {
-        this.mapService.delete(this.selectedStation.id);
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.autoFocus = true;
+        dialogConfig.data = {
+            text: 'Delete station?'
+        };
+        const dialogRef = this.dialog.open(YesNoDialogComponent, dialogConfig);
+        dialogRef.afterClosed().pipe(
+            first(),
+            tap((result) => {
+                if (result === 'yes') {
+                    this.mapService.delete(this.selectedStation.id);
+                }
+            })
+        ).subscribe();
     }
 
     editStation() {

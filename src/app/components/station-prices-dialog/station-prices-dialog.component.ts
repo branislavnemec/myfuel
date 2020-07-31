@@ -95,9 +95,9 @@ export class StationPricesDialogComponent implements OnInit, OnDestroy {
         const prices = {};
         Object.keys(this.inputForm.controls).forEach((controlName: string) => {
             if (this.inputForm.get(controlName).value !== this.fuelPrices.get(controlName).price) {
-                prices[controlName] = { price: Number(this.inputForm.get(controlName).value), date: new Date().toUTCString() }
+                prices[controlName] = { price: Number(this.inputForm.get(controlName).value), date: new Date().toISOString() };
             } else {
-                prices[controlName] = this.fuelPrices.get(controlName)
+                prices[controlName] = this.fuelPrices.get(controlName);
             }
         });
         this.station.prices = prices;

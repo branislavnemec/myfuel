@@ -2,9 +2,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { GoogleMapsModule } from '@angular/google-maps';
-import { AngularFireModule } from '@angular/fire'
-import { AngularFirestoreModule } from '@angular/fire/firestore'
-import { ReactiveFormsModule } from '@angular/forms'
+import { AngularFireModule } from '@angular/fire';
+import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { ReactiveFormsModule } from '@angular/forms';
 
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatButtonModule } from '@angular/material/button';
@@ -26,6 +26,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
+import { TimeagoModule } from 'ngx-timeago';
+
 import { AppRoutingModule } from './app-routing.module';
 
 import { environment } from 'src/environments/environment';
@@ -39,6 +41,7 @@ import { StationsFilterDialogComponent } from './components/stations-filter-dial
 import { StationEditDialogComponent } from './components/station-edit-dialog/station-edit-dialog.component';
 import { MapFilterDialogComponent } from './components/map-filter-dialog/map-filter-dialog.component';
 import { StationPricesDialogComponent } from './components/station-prices-dialog/station-prices-dialog.component';
+import { YesNoDialogComponent } from './components/yes-no-dialog/yes-no-dialog.component';
 
 import { StationsService } from './services/stations.service';
 import { StationFirestore } from './services/firestore/station.firestore';
@@ -67,10 +70,12 @@ import { BackButtonService } from './utils/back-button.service';
         StationEditDialogComponent,
         StationPricesDialogComponent,
         StationsFilterDialogComponent,
-        MapFilterDialogComponent
+        MapFilterDialogComponent,
+        YesNoDialogComponent
     ],
     imports: [
         BrowserModule,
+        TimeagoModule.forRoot(),
         AngularFireModule.initializeApp(environment.firebaseConfig),
         AngularFirestoreModule,
         AppRoutingModule,
@@ -121,7 +126,8 @@ import { BackButtonService } from './utils/back-button.service';
         StationEditDialogComponent,
         StationPricesDialogComponent,
         StationsFilterDialogComponent,
-        MapFilterDialogComponent
+        MapFilterDialogComponent,
+        YesNoDialogComponent
     ]
 })
 export class AppModule { }

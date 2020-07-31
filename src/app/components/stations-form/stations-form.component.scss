@@ -3,12 +3,12 @@
 }
 
 .form-container {
-    max-height: calc(100vh - 64px - 64px - 16px - 48px - 64px - 20px);
+    max-height: calc(100vh - 64px - 64px - 48px - 64px - 18px);
     overflow: auto;
 }
 
 @media (max-width: 599px) {
     .form-container {
-        max-height: calc(100vh - 56px - 64px - 16px - 48px - 56px - 20px);
+        max-height: calc(100vh - 56px - 64px - 48px - 56px - 18px);
     }
 }
