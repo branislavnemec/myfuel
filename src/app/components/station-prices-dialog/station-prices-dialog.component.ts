@@ -1,5 +1,5 @@
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
+import { Component, OnInit, Inject, OnDestroy, NgZone } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 import { StationService } from 'src/app/services/station.service';
 import { filter, switchMap, map, tap, first } from 'rxjs/operators';
@@ -20,10 +20,11 @@ import { BackButtonService } from 'src/app/utils/back-button.service';
 export class StationPricesDialogComponent implements OnInit, OnDestroy {
 
     _Object = Object;
+    isMobileApp = window['cordova'] !== undefined ? true : false;
 
     inputForm: FormGroup = new FormGroup({
     });
-
+    selectedControlName: string;
     stationId: string;
     station: Station;
     fuelPrices: Map<string, FuelPrice>;
@@ -33,7 +34,6 @@ export class StationPricesDialogComponent implements OnInit, OnDestroy {
     fuelTypes$: Observable<FuelType[]>;
     fuelTypesNoResults$: Observable<boolean>;
 
-
     stationSubscription = Subscription.EMPTY;
     loadStationSubscription = Subscription.EMPTY;
 
@@ -41,6 +41,7 @@ export class StationPricesDialogComponent implements OnInit, OnDestroy {
         private stationService: StationService,
         private fuelTypesService: FuelTypesService,
         private backButtonService: BackButtonService,
+        private ngZone: NgZone,
         private dialogRef: MatDialogRef<StationPricesDialogComponent>,
         @Inject(MAT_DIALOG_DATA) data
     ) {
@@ -117,4 +118,31 @@ export class StationPricesDialogComponent implements OnInit, OnDestroy {
     findFuelName(fuelId: string, fuelTypes: FuelType[]) {
         return fuelTypes.find((ft) => ft.id === fuelId) ? fuelTypes.find((ft) => ft.id === fuelId).name : '';
     }
+
+    useCamera(control) {
+        this.selectedControlName = control;
+        navigator.camera.getPicture(
+            (imageData) => {
+                console.log(imageData);
+                textocr.recText(0, imageData,
+                    (recognizedText) => {
+                        console.log(recognizedText);
+                        if (recognizedText.foundText) {
+                            this.ngZone.run(() => {
+                                this.inputForm.controls[this.selectedControlName].setValue(recognizedText.words.wordtext[0]);
+                            });
+                        }
+                    },
+                    (ocrError) => {
+                        console.log('OCR Failed because: ' + ocrError);
+                    }
+                );
+            },
+            (cameraError) => {
+                console.log('Camera Failed because: ' + cameraError);
+            },
+            { quality: 100, destinationType: Camera.DestinationType.FILE_URI, correctOrientation: true }
+        );
+    }
+
 }

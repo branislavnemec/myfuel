@@ -1,10 +1,15 @@
 <h2 mat-dialog-title>Edit prices</h2>
 
 <mat-dialog-content [formGroup]="inputForm">
-  
-    <mat-form-field *ngFor="let c of _Object.keys(inputForm.controls)">
-        <input matInput [placeholder]="findFuelName(c, fuelTypes$ | async)" [formControlName]="c">
-    </mat-form-field>
+ 
+    <div class="input-and-icon" *ngFor="let c of _Object.keys(inputForm.controls)">
+        <mat-form-field>
+            <input matInput [placeholder]="findFuelName(c, fuelTypes$ | async)" [formControlName]="c">
+        </mat-form-field>
+        <button mat-icon-button onclick="this.blur()" (click)="useCamera(c)" *ngIf="isMobileApp">
+            <mat-icon>photo_camera</mat-icon>
+        </button>
+    </div>
 
 </mat-dialog-content>
 

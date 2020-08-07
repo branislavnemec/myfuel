@@ -160,7 +160,6 @@ export class StationEditDialogComponent implements OnInit, OnDestroy {
         const updatedStation: Station = {
             id: this.stationId,
             name: this.inputForm.controls.name.value.toString(),
-            name_lowercase: this.inputForm.controls.name.value.toString().toLowerCase(),
             lat: Number(this.inputForm.controls.lat.value),
             lng: Number(this.inputForm.controls.lng.value),
             position: pos,

@@ -11,9 +11,9 @@
     <map-marker
         #marker="mapMarker"
         *ngFor="let station of stations$ | async"
-        [position]="{lat: station.lat, lng: station.lng}"
-        [label]="station.name + ' ' + (station.fuels.length > 0 && station.prices[(mapFilter$ | async).fuelTypeId] ? station.prices[(mapFilter$ | async).fuelTypeId].price : '')"
-        [title]="station.name"
+        [position]="{ lat: station.lat, lng: station.lng }"
+        [label]="{ text: getMarkerLabel(station), fontSize: '11px', color: 'white', fontWeight: 'bold' }"
+        [options]="{ icon: { url: 'assets/images/map/local_gas_station-black-48dp.svg', labelOrigin: { x: 17, y: 29 } } }"
         (mapClick)="openInfo(marker, station)"
     >
     </map-marker>
@@ -36,9 +36,9 @@
     </map-marker>
 
     <map-circle *ngIf="position$"
-        [options]="{ draggable: circleDraggable$ | async }"
+        [options]="{ draggable: circleDraggable$ | async, fillOpacity: 0.1 }"
         [center]="position$ | async"
-        [radius]="(mapFilter$ | async).range * 1000"
+        [radius]="mapFilter.range * 1000"
         (circleDblclick)="circleDblclick($event)"
         (circleDragend)="circleDragend($event)"
     >

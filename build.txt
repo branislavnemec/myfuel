@@ -1,4 +1,4 @@
-ng build --prod=true --aot=true --baseHref=/myfuel/
+ng build --prod=true --aot=true --baseHref=./
 
 cordova platform add android
 cordova run android

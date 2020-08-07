@@ -1,3 +1,8 @@
+/// <reference types="cordova-plugin-camera" />
+declare global {
+    var textocr: any;
+}
+
 import { enableProdMode } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
@@ -14,7 +19,7 @@ const bootstrap = () => {
 
 };
 
-if (typeof window['cordova'] !== 'undefined') {
+if (window['cordova'] !== undefined) {
     document.addEventListener('deviceready', () => {
         console.log('bootstrap device');
         bootstrap();

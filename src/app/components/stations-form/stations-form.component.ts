@@ -109,7 +109,6 @@ export class StationsFormComponent implements OnInit, OnDestroy {
         );
         const newStation: Station = {
             name: this.inputForm.controls.name.value.toString(),
-            name_lowercase: this.inputForm.controls.name.value.toString().toLowerCase(),
             lat: Number(this.inputForm.controls.lat.value),
             lng: Number(this.inputForm.controls.lng.value),
             position: pos,
@@ -121,7 +120,7 @@ export class StationsFormComponent implements OnInit, OnDestroy {
             },
             keywords: Keywords.generateKeywords([this.inputForm.controls.name.value.toString(),
                 this.inputForm.controls.city.value.toString()])
-        }
+        };
         const fuels = [];
         const prices = {};
         (this.inputForm.controls.fuelTypesArray as FormArray).controls.forEach((control, index) => {

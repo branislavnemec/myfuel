@@ -45,8 +45,10 @@ export class MapComponent implements OnInit, OnDestroy {
 
     zoom = 0;
     selectedStation: Station;
+    mapFilter: MapFilter;
 
     mapZoomSubscription = Subscription.EMPTY;
+    mapFilterSubscription = Subscription.EMPTY;
 
     constructor(private mapService: MapService,
                 private dialog: MatDialog,
@@ -63,6 +65,9 @@ export class MapComponent implements OnInit, OnDestroy {
         this.mapZoomSubscription = this.mapService.mapZoom$.subscribe(value => {
             console.log(value);
             this.zoom = this.zoom + (value - this.zoom);
+        });
+        this.mapFilterSubscription = this.mapService.mapFilter$.subscribe(value => {
+            this.mapFilter = value;
         });
         this.mapService.mapCenter$.pipe(
             first()
@@ -85,10 +90,12 @@ export class MapComponent implements OnInit, OnDestroy {
     ngOnDestroy(): void {
         this.mapService.setMapCenter(this.googleMap.getCenter().toJSON());
         this.mapZoomSubscription.unsubscribe();
+        this.mapFilterSubscription.unsubscribe();
     }
 
     mapDblclick(event: google.maps.MouseEvent) {
         this.mapService.setPosition({ lat: event.latLng.toJSON().lat, lng: event.latLng.toJSON().lng });
+
     }
 
     circleDblclick(event: google.maps.MouseEvent) {
@@ -110,14 +117,13 @@ export class MapComponent implements OnInit, OnDestroy {
         setTimeout(() => {
             console.log('zoomChanged');
             this.mapService.setMapZoom(this.googleMap.getZoom());
-        })
+        });
     }
 
     addStation(lat: number, lng: number, country: string) {
         const position = this.geoFireXService.geoFireClient.point(lat, lng);
         const newStation: Station = {
             name: 'new',
-            name_lowercase: 'new',
             lat: lat,
             lng: lng,
             position: position,
@@ -199,4 +205,7 @@ export class MapComponent implements OnInit, OnDestroy {
         this.mapService.toggleCircleDraggable(!this.mapCircle.getDraggable());
     }
 
+    getMarkerLabel(s: Station) {
+        return String(s.fuels.length > 0 && s.prices[this.mapFilter.fuelTypeId] ? s.prices[this.mapFilter.fuelTypeId].price : ' ');
+    }
 }

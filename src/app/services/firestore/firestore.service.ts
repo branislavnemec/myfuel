@@ -20,9 +20,9 @@ export abstract class FirestoreService<T> {
         return this.firestore.doc<T>(`${this.basePath}/${id}`).valueChanges().pipe(
             tap(r => {
                 if (!environment.production) {
-                    console.groupCollapsed(`Firestore Streaming [${this.basePath}] [doc$] ${id}`)
-                    console.log(r)
-                    console.groupEnd()
+                    console.groupCollapsed(`Firestore Streaming [${this.basePath}] [doc$] ${id}`);
+                    console.log(r);
+                    console.groupEnd();
                 }
             })
         );
@@ -33,9 +33,9 @@ export abstract class FirestoreService<T> {
             distinctUntilChanged(),
             tap(r => {
                 if (!environment.production) {
-                    console.groupCollapsed(`Firestore Streaming [${this.basePath}] [collection$]`)
-                    console.table(r)
-                    console.groupEnd()
+                    console.groupCollapsed(`Firestore Streaming [${this.basePath}] [collection$]`);
+                    console.table(r);
+                    console.groupEnd();
                 }
             })
         );
@@ -47,9 +47,9 @@ export abstract class FirestoreService<T> {
             distinctUntilChanged(),
             tap(r => {
                 if (!environment.production) {
-                    console.groupCollapsed(`Firestore Streaming [${this.basePath}] [geoCollection$]`)
-                    console.table(r)
-                    console.groupEnd()
+                    console.groupCollapsed(`Firestore Streaming [${this.basePath}] [geoCollection$]`);
+                    console.table(r);
+                    console.groupEnd();
                 }
             })
         );
@@ -59,31 +59,31 @@ export abstract class FirestoreService<T> {
         const id = this.firestore.createId();
         return this.collection.doc(id).set(Object.assign({}, { id }, value)).then(_ => {
             if (!environment.production) {
-                console.groupCollapsed(`Firestore Service [${this.basePath}] [create]`)
-                console.log('[Id]', id, value)
-                console.groupEnd()
+                console.groupCollapsed(`Firestore Service [${this.basePath}] [create]`);
+                console.log('[Id]', id, value);
+                console.groupEnd();
             }
-        })
+        });
     }
 
     update(id: string, value: T) {
         return this.collection.doc(id).update(Object.assign({}, { id }, value)).then(_ => {
             if (!environment.production) {
-                console.groupCollapsed(`Firestore Service [${this.basePath}] [update]`)
-                console.log('[Id]', id, value)
-                console.groupEnd()
+                console.groupCollapsed(`Firestore Service [${this.basePath}] [update]`);
+                console.log('[Id]', id, value);
+                console.groupEnd();
             }
-        })
+        });
     }
 
     delete(id: string) {
         return this.collection.doc(id).delete().then(_ => {
             if (!environment.production) {
-                console.groupCollapsed(`Firestore Service [${this.basePath}] [delete]`)
-                console.log('[Id]', id)
-                console.groupEnd()
+                console.groupCollapsed(`Firestore Service [${this.basePath}] [delete]`);
+                console.log('[Id]', id);
+                console.groupEnd();
             }
-        })
+        });
     }
 
     private get collection() {
