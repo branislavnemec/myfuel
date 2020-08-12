@@ -33,7 +33,7 @@ export class StationService {
         return this.store.state$.pipe(
             map(state => {
                 return !state.loading
-                    && !state.station
+                    && !state.station;
             }),
             distinctUntilChanged()
         );

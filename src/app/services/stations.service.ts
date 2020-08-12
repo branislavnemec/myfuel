@@ -23,7 +23,7 @@ export class StationsService {
                                     .where('prices.' + stationsFilter.fuelTypeId + '.price', '>', 0)
                                     .where('keywords', 'array-contains', searchInputValue.toLowerCase())
                                     .orderBy('prices.' + stationsFilter.fuelTypeId + '.price')
-                                    .limit(50);
+                                    .limit(20);
                         }).pipe(
                             tap(stations => {
                                 this.store.patch({

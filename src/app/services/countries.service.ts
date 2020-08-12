@@ -12,7 +12,11 @@ export class CountriesService {
         private firestore: CountryFirestore,
         private store: LovCountriesStore) {
 
-        this.firestore.collection$().pipe(
+        this.firestore.collection$(ref => {
+            return ref
+                    .orderBy('name')
+                    .limit(300);
+        }).pipe(
             tap(countries => {
                 this.store.patch({
                     loading: false,
@@ -42,7 +46,7 @@ export class CountriesService {
             map(state => {
                 return !state.loading
                     && state.countries
-                    && state.countries.length === 0
+                    && state.countries.length === 0;
             }),
             distinctUntilChanged()
         );

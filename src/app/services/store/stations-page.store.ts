@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class StationsPageStore extends StoreService<StationsPage> {
 
-    protected store: string = 'stations-page';
+    protected store = 'stations-page';
 
     constructor() {
         super({

@@ -48,3 +48,25 @@
 .map-icon-on {
     background-color: grey;
 }
+
+.text-right {
+    text-align: right;
+}
+
+map-info-window {
+    p {
+        min-width: 140px;
+        margin-bottom: 5px;
+    }
+    div.flex {
+        display: flex;
+    }
+    div.margin-top-2px {
+        margin-top: 2px;
+    }
+}
+
+.font-10 {
+    font-size: 10px;
+}
+

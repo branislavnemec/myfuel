@@ -18,15 +18,26 @@
     >
     </map-marker>
 
-    <map-info-window>
-        <b>{{ selectedStation?.name }}</b><br>
-        {{ selectedStation?.address.street }}<br *ngIf="selectedStation?.address.street">
-        {{ selectedStation?.address.city }}<br *ngIf="selectedStation?.address.city">
-        {{ selectedStation?.address.zip }}<br *ngIf="selectedStation?.address.zip">
-        <br>
-        <a (click)="editPrices()"><mat-icon>attach_money</mat-icon></a>
-        <a (click)="editStation()"><mat-icon>edit</mat-icon></a>
-        <a (click)="deleteStation()"><mat-icon>delete</mat-icon></a>
+    <map-info-window *ngIf="selectedStation">
+        <p>
+            <b>{{ selectedStation.name }}</b><br>
+            {{ selectedStation.address.street }}<br *ngIf="selectedStation.address.street">
+            {{ selectedStation.address.city }}<br *ngIf="selectedStation.address.city">
+            {{ selectedStation.address.zip }}<br *ngIf="selectedStation.address.zip">
+        </p>
+        <div class="flex" *ngFor="let fuelTypeId of selectedStation.fuels">
+            <div>
+                <img src="{{'assets/images/map/' + fuelTypeId + '.svg'}}">
+            </div>
+            <div class="margin-top-2px" *ngIf="selectedStation.prices[fuelTypeId].price > 0">
+                <b>{{ selectedStation.prices[fuelTypeId].price }}</b>&nbsp;<span class="font-10">{{ selectedStation.prices[fuelTypeId].date | timeago }}</span>
+            </div>
+        </div>
+        <div class="text-right">
+            <a (click)="editPrices()"><mat-icon>attach_money</mat-icon></a>
+            <a (click)="editStation()"><mat-icon>edit</mat-icon></a>
+            <a (click)="deleteStation()"><mat-icon>delete</mat-icon></a>
+        </div>
     </map-info-window>
 
     <map-marker *ngIf="position$"

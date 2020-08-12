@@ -142,7 +142,9 @@ export class MapComponent implements OnInit, OnDestroy {
 
     openInfo(marker: MapMarker, station: Station) {
         this.selectedStation = station;
-        this.mapInfoWindow.open(marker);
+        setTimeout(() => {
+            this.mapInfoWindow.open(marker);
+        });
     }
 
     deleteStation() {
