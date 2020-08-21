@@ -14,33 +14,41 @@
 }
 
 .toolbar-spacer {
-  flex: 1 1 auto;
+    flex: 1 1 auto;
 }
 
 .sidenav-content {
-  overflow: hidden;
+    overflow: hidden;
 }
 
 .toolbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
 }
 
 .sidenav {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 999;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 999;
 }
 
 .menu-bar {
-  position: fixed;
-  top: calc(100vh - 64px);
-  @media (max-width: 599px) {
-    top: calc(100vh - 56px);
-  }
-  left: 0;
-  right: 0;
+    position: fixed;
+    top: calc(100vh - 64px);
+    @media (max-width: 599px) {
+        top: calc(100vh - 56px);
+    }
+    left: 0;
+    right: 0;
+}
+
+.selected-main-menu-item {
+    color: rgb(63, 81, 181);
+}
+
+.flexSpaceBetween {
+    justify-content: space-between;
 }

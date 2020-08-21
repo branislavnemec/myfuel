@@ -1,19 +1,18 @@
 <mat-toolbar color="primary" class="toolbar">
-    <mat-toolbar-row>
-        <button mat-icon-button onclick="this.blur()" (click)="sidenav.toggle()">
-            <mat-icon>menu</mat-icon>
+    <button mat-icon-button onclick="this.blur()" (click)="sidenav.toggle()">
+        <mat-icon>menu</mat-icon>
+    </button>
+    {{ title$ | async }}
+    <span class="toolbar-spacer"></span>
+    <button mat-icon-button [matMenuTriggerFor]="menu">
+        <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+        <button mat-menu-item>
+            <mat-icon>help</mat-icon>
+            <span>About</span>
         </button>
-        <span class="toolbar-spacer"></span>
-        <button mat-icon-button [matMenuTriggerFor]="menu">
-            <mat-icon>more_vert</mat-icon>
-        </button>
-        <mat-menu #menu="matMenu">
-            <button mat-menu-item>
-              <mat-icon>help</mat-icon>
-              <span>About</span>
-            </button>
-        </mat-menu>
-    </mat-toolbar-row>
+    </mat-menu>
 </mat-toolbar>
 
 <mat-sidenav-container class="sidenav-container">
@@ -50,23 +49,14 @@
 
 </mat-sidenav-container>
 
-<mat-toolbar color="secondary" class="menu-bar">
-    <mat-toolbar-row>
-        <button mat-icon-button (click)="goToMap()">
-            <mat-icon>map</mat-icon>
-        </button>
-        <button mat-icon-button (click)="goToStations()">
-            <mat-icon>list</mat-icon>
-        </button>
-        <span class="toolbar-spacer"></span>
-        <button mat-icon-button [matMenuTriggerFor]="menu">
-            <mat-icon>more_vert</mat-icon>
-        </button>
-        <mat-menu #menu="matMenu">
-            <button mat-menu-item>
-              <mat-icon>help</mat-icon>
-              <span>About</span>
-            </button>
-        </mat-menu>
-    </mat-toolbar-row>
+<mat-toolbar class="menu-bar flexSpaceBetween" *ngIf="mainMenuVisible$ | async">
+    <button mat-icon-button (click)="goToMap()">
+        <mat-icon [ngClass]="{'selected-main-menu-item' : (mainMenuItem$ | async) === 'map'}">map</mat-icon>
+    </button>
+    <button mat-icon-button (click)="goToStations()">
+        <mat-icon [ngClass]="{'selected-main-menu-item' : (mainMenuItem$ | async) === 'stations'}">list</mat-icon>
+    </button>
+    <button mat-icon-button (click)="goToFavourites()">
+        <mat-icon [ngClass]="{'selected-main-menu-item' : (mainMenuItem$ | async) === 'favourites'}">star_outline</mat-icon>
+    </button>
 </mat-toolbar>

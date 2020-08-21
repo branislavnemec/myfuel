@@ -27,6 +27,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 import { TimeagoModule } from 'ngx-timeago';
+import { NgxIndexedDBModule, DBConfig } from 'ngx-indexed-db';
 
 import { AppRoutingModule } from './app-routing.module';
 
@@ -58,8 +59,22 @@ import { LovFuelTypesStore } from './services/store/lov-fuel-types.store';
 import { FuelTypesService } from './services/fuel-types.service';
 import { FuelTypeFirestore } from './services/firestore/fuel-type.firestore';
 import { BackButtonService } from './utils/back-button.service';
+import { IndexedDBService } from './utils/indexed-db.service';
+import { MainLayoutService } from './services/main-layout.service';
+import { MainLayoutStore } from './services/store/main-layout.store';
 
-
+const dbConfig: DBConfig  = {
+    name: 'MyFuelLocalDb',
+    version: 1,
+    objectStoresMeta: [{
+      store: 'activities',
+      storeConfig: { keyPath: 'id', autoIncrement: false },
+      storeSchema: [
+        { name: 'attempts', keypath: 'attempts', options: { unique: false } },
+        { name: 'timestamp', keypath: 'timestamp', options: { unique: false } }
+      ]
+    }]
+  };
 @NgModule({
     declarations: [
         AppComponent,
@@ -76,6 +91,7 @@ import { BackButtonService } from './utils/back-button.service';
     imports: [
         BrowserModule,
         TimeagoModule.forRoot(),
+        NgxIndexedDBModule.forRoot(dbConfig),
         AngularFireModule.initializeApp(environment.firebaseConfig),
         AngularFirestoreModule,
         AppRoutingModule,
@@ -117,7 +133,10 @@ import { BackButtonService } from './utils/back-button.service';
         FuelTypesService,
         FuelTypeFirestore,
         GeoFireXService,
-        BackButtonService
+        BackButtonService,
+        IndexedDBService,
+        MainLayoutService,
+        MainLayoutStore
     ],
     bootstrap: [
         AppComponent

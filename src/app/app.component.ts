@@ -1,6 +1,8 @@
-import { Component, OnInit, HostListener, NgZone, AfterViewInit } from '@angular/core';
+import { Component, OnInit, HostListener, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { BackButtonService } from './utils/back-button.service';
+import { MainLayoutService } from './services/main-layout.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -9,10 +11,15 @@ import { BackButtonService } from './utils/back-button.service';
 })
 export class AppComponent implements OnInit {
 
+    mainMenuItem$: Observable<string>;
+    mainMenuVisible$: Observable<boolean>;
+    title$: Observable<string>;
+
     constructor(
         private router: Router,
         private ngZone: NgZone,
-        private backButtonService: BackButtonService
+        private backButtonService: BackButtonService,
+        private mainLayoutService: MainLayoutService
     ) {}
 
     @HostListener('document:backbutton')
@@ -24,6 +31,9 @@ export class AppComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.mainMenuItem$ = this.mainLayoutService.mainMenuItem$;
+        this.mainMenuVisible$ = this.mainLayoutService.mainMenuVisible$;
+        this.title$ = this.mainLayoutService.title$;
     }
 
     goToMap() {
@@ -32,6 +42,9 @@ export class AppComponent implements OnInit {
 
     goToStations() {
         this.router.navigate(['stations']);
+    }
+
+    goToFavourites() {
     }
 
 }

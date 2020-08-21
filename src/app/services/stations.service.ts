@@ -57,7 +57,7 @@ export class StationsService {
             map(state => {
                 return !state.loading
                     && state.stations
-                    && state.stations.length === 0
+                    && state.stations.length === 0;
             }),
             distinctUntilChanged()
         );
@@ -118,16 +118,16 @@ export class StationsService {
         this.store.patch({ searchInputValue: value }, 'search input set');
     }
 
-    setStationsFilter(stationsFilter: StationsFilter) {
-        if (this.store.previous.stationsFilter.countryId === stationsFilter.countryId &&
-            this.store.previous.stationsFilter.fuelTypeId === stationsFilter.fuelTypeId) {
+    setStationsFilter(stationsFil: StationsFilter) {
+        if (this.store.previous.stationsFilter.countryId === stationsFil.countryId &&
+            this.store.previous.stationsFilter.fuelTypeId === stationsFil.fuelTypeId) {
                 // do not patch the store
 
             } else {
                 this.store.patch({
                     loading: true,
                     stations: [],
-                    stationsFilter: stationsFilter
+                    stationsFilter: stationsFil
                 }, 'stations filter set');
             }
     }

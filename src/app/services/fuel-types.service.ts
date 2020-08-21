@@ -42,7 +42,7 @@ export class FuelTypesService {
             map(state => {
                 return !state.loading
                     && state.fuelTypes
-                    && state.fuelTypes.length === 0
+                    && state.fuelTypes.length === 0;
             }),
             distinctUntilChanged()
         );

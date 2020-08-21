@@ -1,5 +1,5 @@
 import { StationFirestore } from './firestore/station.firestore';
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Station } from '../models/station';
 import { tap, map, distinctUntilChanged, filter, distinctUntilKeyChanged } from 'rxjs/operators';
@@ -7,6 +7,10 @@ import { MapPageStore } from './store/map-page.store';
 import { MapFilter } from '../models/map-filter';
 import { switchMap } from 'rxjs/operators';
 import { GeoFireXService } from '../utils/geofirex.service';
+import { IndexedDBService } from '../utils/indexed-db.service';
+import { Activity } from '../utils/activities';
+import { environment } from 'src/environments/environment';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable()
 export class MapService {
@@ -14,7 +18,10 @@ export class MapService {
     constructor(
         private firestore: StationFirestore,
         private store: MapPageStore,
-        private geoFireXService: GeoFireXService
+        private geoFireXService: GeoFireXService,
+        private indexedDBService: IndexedDBService,
+        private matSnackBar: MatSnackBar,
+        private ngZone: NgZone
     ) {
         this.position$.pipe(
             filter((position: google.maps.LatLngLiteral) => !!position),
@@ -80,15 +87,31 @@ export class MapService {
     }
 
     create(station: Station) {
-        this.store.patch({
-        }, 'station create');
-        return this.firestore.create(station).then(_ => {
-            this.store.patch({
-            }, 'station create SUCCESS');
-        }).catch(err => {
-            this.store.patch({
-            }, 'station create ERROR');
-        });
+        this.indexedDBService.isActivityAllowed(Activity.CREATE_NEW_STATION,
+            environment.activityLimits.createNewStation.maxAttempts,
+            environment.activityLimits.createNewStation.period).then(
+            (result) => {
+                this.ngZone.run(() => {
+                    console.log(result);
+                    if (result) {
+                        this.store.patch({
+                        }, 'station create');
+                        return this.firestore.create(station).then(_ => {
+                            this.store.patch({
+                            }, 'station create SUCCESS');
+                            this.indexedDBService.logActivity(Activity.CREATE_NEW_STATION, environment.activityLimits.createNewStation.maxAttempts);
+                        }).catch(err => {
+                            this.store.patch({
+                            }, 'station create ERROR');
+                        });
+                    } else {
+                        this.matSnackBar.open('Create new station limit exceeded', null, {
+                            duration: 2000,
+                        });
+                    }
+                });
+            }
+        );
     }
 
     delete(id: string): any {
@@ -108,12 +131,12 @@ export class MapService {
         this.store.patch({ mapZoom: zoom }, 'map zoom set');
     }
 
-    setPosition(position: google.maps.LatLngLiteral) {
-        this.store.patch({ position: position }, 'position set');
+    setPosition(pos: google.maps.LatLngLiteral) {
+        this.store.patch({ position: pos }, 'position set');
     }
 
-    setMapFilter(mapFilter: MapFilter) {
-        this.store.patch({ mapFilter: mapFilter }, 'map filter set');
+    setMapFilter(mapFil: MapFilter) {
+        this.store.patch({ mapFilter: mapFil }, 'map filter set');
     }
 
     toggleCircleDraggable(draggable: boolean) {
