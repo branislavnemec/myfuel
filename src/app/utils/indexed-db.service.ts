@@ -9,7 +9,7 @@ export class IndexedDBService {
 
     isActivityAllowed(activityId: number, maxAttempts: number, period: number): Promise<boolean> {
         return new Promise((resolve, reject) => {
-            this.dbService.getByKey('activities', activityId).then(
+            this.dbService.getByKey('activities', activityId).toPromise().then(
                 (result) => {
                     console.log(result);
                     if (result === undefined ||
@@ -35,11 +35,11 @@ export class IndexedDBService {
 
     logActivity(activityId: number, maxAttempts: number): Promise<boolean> {
         return new Promise((resolve, reject) => {
-            this.dbService.getByKey('activities', activityId).then(
+            this.dbService.getByKey('activities', activityId).toPromise().then(
                 (result) => {
                     console.log(result);
                     if (result === undefined) {
-                        this.dbService.add('activities', {id: activityId, attempts: 1, timestamp: Date.now()}).then(
+                        this.dbService.add('activities', {id: activityId, attempts: 1, timestamp: Date.now()}).toPromise().then(
                             (res) => {
                                 console.log(res);
                                 resolve(true);
@@ -50,7 +50,8 @@ export class IndexedDBService {
                             }
                         );
                     } else {
-                        this.dbService.update('activities', {id: activityId, attempts: (result.attempts < maxAttempts ? result.attempts + 1 : 1), timestamp: Date.now()}).then(
+                        this.dbService.update('activities', { id: activityId, attempts: (result.attempts < maxAttempts ? result.attempts + 1 : 1), timestamp: Date.now() })
+                        .toPromise().then(
                             (res) => {
                                 console.log(res);
                                 resolve(true);
