@@ -17,7 +17,8 @@ export class MapPageStore extends StoreService<MapPage> {
             mapCenter: null,
             mapZoom: 14,
             position: null,
-            circleDraggable: false
+            circleDraggable: false,
+            createdStation: null
         });
     }
 }

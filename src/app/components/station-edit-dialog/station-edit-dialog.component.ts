@@ -7,7 +7,7 @@ import { Station } from 'src/app/models/station';
 import { Observable, Subscription } from 'rxjs';
 import { Country } from 'src/app/models/country';
 import { CountriesService } from 'src/app/services/countries.service';
-import { ObjectValidator } from 'src/app/utils/validators';
+import { FormArrayValidator, ObjectValidator } from 'src/app/utils/validators';
 import { GeoFireXService } from 'src/app/utils/geofirex.service';
 import { Keywords } from 'src/app/utils/keywords';
 import { FuelType } from 'src/app/models/fuel-type';
@@ -31,7 +31,7 @@ export class StationEditDialogComponent implements OnInit, OnDestroy {
         city: new FormControl(''),
         street: new FormControl(''),
         zip: new FormControl(''),
-        fuelTypesArray: new FormArray([])
+        fuelTypesArray: new FormArray([], FormArrayValidator.atLeastOneIsTrue)
     });
 
     stationId: string;
@@ -104,7 +104,7 @@ export class StationEditDialogComponent implements OnInit, OnDestroy {
                             );
                         }
                     })
-                )
+                );
             })
         ).subscribe();
 
@@ -125,7 +125,7 @@ export class StationEditDialogComponent implements OnInit, OnDestroy {
                             (this.inputForm.controls.fuelTypesArray as FormArray).push(control);
                         });
                     })
-                )
+                );
             })
         ).subscribe();
 
@@ -171,7 +171,7 @@ export class StationEditDialogComponent implements OnInit, OnDestroy {
             },
             keywords: Keywords.generateKeywords([this.inputForm.controls.name.value.toString(),
                 this.inputForm.controls.city.value.toString()])
-        }
+        };
         const fuels = [];
         const prices = {};
         (this.inputForm.controls.fuelTypesArray as FormArray).controls.forEach((control, index) => {

@@ -1,16 +1,23 @@
 import { StationEditDialogStore } from './store/station-edit-dialog.store';
 import { StationFirestore } from './firestore/station.firestore';
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Station } from '../models/station';
 import { tap, map, catchError, distinctUntilChanged } from 'rxjs/operators';
+import { IndexedDBService } from '../utils/indexed-db.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Activity } from '../utils/activities';
+import { environment } from 'src/environments/environment';
 
 @Injectable()
 export class StationService {
 
     constructor(
         private firestore: StationFirestore,
-        private store: StationEditDialogStore
+        private store: StationEditDialogStore,
+        private indexedDBService: IndexedDBService,
+        private matSnackBar: MatSnackBar,
+        private ngZone: NgZone
     ) {
 
     }
@@ -47,22 +54,39 @@ export class StationService {
     }
 
     update(station: Station) {
-        this.store.patch({
-            loading: true,
-            formStatus: 'Saving...'
-        }, 'station update');
-        return this.firestore.update(station.id, station).then(
+        return this.indexedDBService.isActivityAllowed(Activity.UPDATE_STATION,
+            environment.activityLimits.updateStation.maxAttempts,
+            environment.activityLimits.updateStation.period).then(
             (result) => {
-                this.store.patch({
-                    loading: false,
-                    formStatus: 'Saved!'
-                }, 'station update SUCCESS');
-            },
-            (err) => {
-                this.store.patch({
-                    loading: false,
-                    formStatus: 'An error ocurred'
-                }, 'station update ERROR');
+                return this.ngZone.run(() => {
+                    console.log(result);
+                    if (result) {
+                        this.store.patch({
+                            loading: true,
+                            formStatus: 'Saving...'
+                        }, 'station update');
+                        return this.firestore.update(station.id, station).then(
+                            (res) => {
+                                this.store.patch({
+                                    loading: false,
+                                    formStatus: 'Saved!'
+                                }, 'station update SUCCESS');
+                                this.indexedDBService.logActivity(Activity.UPDATE_STATION, environment.activityLimits.updateStation.maxAttempts);
+                            },
+                            (err) => {
+                                this.store.patch({
+                                    loading: false,
+                                    formStatus: 'An error ocurred'
+                                }, 'station update ERROR');
+                            }
+                        );
+                    } else {
+                        this.matSnackBar.open('Edit station daily limit exceeded', null, {
+                            duration: 3000,
+                        });
+                        return Promise.reject();
+                    }
+                });
             }
         );
     }

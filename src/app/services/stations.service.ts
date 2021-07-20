@@ -1,17 +1,24 @@
 import { StationsPageStore } from './store/stations-page.store';
 import { StationFirestore } from './firestore/station.firestore';
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Station } from '../models/station';
 import { tap, map, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { StationsFilter } from '../models/stations-filter';
+import { IndexedDBService } from '../utils/indexed-db.service';
+import { Activity } from '../utils/activities';
+import { environment } from 'src/environments/environment';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable()
 export class StationsService {
 
     constructor(
         private firestore: StationFirestore,
-        private store: StationsPageStore
+        private store: StationsPageStore,
+        private indexedDBService: IndexedDBService,
+        private matSnackBar: MatSnackBar,
+        private ngZone: NgZone
     ) {
         this.searchInputValue$.pipe(
             switchMap((searchInputValue: string) => {
@@ -20,7 +27,7 @@ export class StationsService {
                         return this.firestore.collection$(ref => {
                             return ref
                                     .where('address.country', '==', stationsFilter.countryId)
-                                    .where('prices.' + stationsFilter.fuelTypeId + '.price', '>', 0)
+                                    .where('prices.' + stationsFilter.fuelTypeId + '.price', '>=', 0)
                                     .where('keywords', 'array-contains', searchInputValue.toLowerCase())
                                     .orderBy('prices.' + stationsFilter.fuelTypeId + '.price')
                                     .limit(20);
@@ -85,33 +92,71 @@ export class StationsService {
     }
 
     create(station: Station) {
-        this.store.patch({
-            loading: true,
-            formStatus: 'Saving...'
-        }, 'station create');
-        return this.firestore.create(station).then(() => {
-            this.store.patch({
-                formStatus: 'Saved!'
-            }, 'station create SUCCESS');
-            setTimeout(() => this.store.patch({
-                formStatus: ''
-            }, 'station create timeout reset formStatus'), 2000);
-        }).catch(err => {
-            this.store.patch({
-                loading: false,
-                formStatus: 'An error ocurred'
-            }, 'station create ERROR');
-        });
+        this.indexedDBService.isActivityAllowed(Activity.CREATE_NEW_STATION,
+            environment.activityLimits.createNewStation.maxAttempts,
+            environment.activityLimits.createNewStation.period).then(
+            (result) => {
+                this.ngZone.run(() => {
+                    console.log(result);
+                    if (result) {
+                        this.store.patch({
+                            loading: true,
+                            formStatus: 'Saving...'
+                        }, 'station create');
+                        return this.firestore.create(station).then(() => {
+                            this.store.patch({
+                                loading: false,
+                                formStatus: 'Saved!'
+                            }, 'station create SUCCESS');
+                            this.indexedDBService.logActivity(Activity.CREATE_NEW_STATION, environment.activityLimits.createNewStation.maxAttempts);
+                            setTimeout(() => this.store.patch({
+                                formStatus: ''
+                            }, 'station create timeout reset formStatus'), 2000);
+                        }).catch(err => {
+                            this.store.patch({
+                                loading: false,
+                                formStatus: 'An error ocurred'
+                            }, 'station create ERROR');
+                        });
+                    } else {
+                        this.matSnackBar.open('Create new station daily limit exceeded', null, {
+                            duration: 3000,
+                        });
+                    }
+                });
+            }
+        );
     }
 
-    delete(id: string): any {
-        this.store.patch({ loading: true }, 'station delete');
-        return this.firestore.delete(id).catch(err => {
-            this.store.patch({
-                loading: false,
-                formStatus: 'An error ocurred'
-            }, 'station delete ERROR');
-        });
+    delete(id: string) {
+        this.indexedDBService.isActivityAllowed(Activity.DELETE_STATION,
+            environment.activityLimits.deleteStation.maxAttempts,
+            environment.activityLimits.deleteStation.period).then(
+            (result) => {
+                this.ngZone.run(() => {
+                    console.log(result);
+                    if (result) {
+                        this.store.patch({
+                            loading: true
+                        }, 'station delete');
+                        return this.firestore.delete(id).then(() => {
+                            this.store.patch({
+                                loading: false,
+                            }, 'station delete SUCCESS');
+                            this.indexedDBService.logActivity(Activity.DELETE_STATION, environment.activityLimits.deleteStation.maxAttempts);
+                        }).catch(err => {
+                            this.store.patch({
+                                loading: false
+                            }, 'station delete ERROR');
+                        });
+                    } else {
+                        this.matSnackBar.open('Delete station daily limit exceeded', null, {
+                            duration: 3000,
+                        });
+                    }
+                });
+            }
+        );
     }
 
     setSearchInputValue(value: string) {

@@ -1,4 +1,4 @@
-import { FormControl } from '@angular/forms';
+import { FormArray, FormControl, ValidatorFn } from '@angular/forms';
 
 export class ObjectValidator {
 
@@ -7,6 +7,25 @@ export class ObjectValidator {
             return { mustBeObject: true };
         }
         return null;
+    }
+
+}
+
+export class FormArrayValidator {
+
+    static atLeastOneIsTrue(formArray: FormArray) {
+        let atLeastOneIsTrue = false;
+        formArray.controls.find((control: FormControl) => {
+            if (control.value === true) {
+                atLeastOneIsTrue = true;
+                return null;
+            }
+        });
+        if (atLeastOneIsTrue) {
+            return null;
+        } else {
+            return { atLeastOneIsTrue: true };
+        }
     }
 
 }

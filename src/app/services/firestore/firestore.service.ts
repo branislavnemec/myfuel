@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, QueryFn } from '@angular/fire/firestore';
+import { AngularFireAuth } from '@angular/fire/auth';
 import { Observable } from 'rxjs';
 import { tap, distinctUntilChanged } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
@@ -13,8 +14,11 @@ export abstract class FirestoreService<T> {
 
     constructor(
         protected firestore: AngularFirestore,
+        protected angularFireAuth: AngularFireAuth,
         protected geoFireXService: GeoFireXService
-    ) {}
+    ) {
+        this.angularFireAuth.signInAnonymously();
+    }
 
     doc$(id: string): Observable<T> {
         return this.firestore.doc<T>(`${this.basePath}/${id}`).valueChanges().pipe(
@@ -63,6 +67,7 @@ export abstract class FirestoreService<T> {
                 console.log('[Id]', id, value);
                 console.groupEnd();
             }
+            return Object.assign({}, { id }, value);
         });
     }
 

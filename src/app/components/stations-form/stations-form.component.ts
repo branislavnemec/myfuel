@@ -6,7 +6,7 @@ import { Station } from 'src/app/models/station';
 import { CountriesService } from 'src/app/services/countries.service';
 import { Country } from 'src/app/models/country';
 import { filter, map, switchMap, tap } from 'rxjs/operators';
-import { ObjectValidator } from 'src/app/utils/validators';
+import { ObjectValidator, FormArrayValidator } from 'src/app/utils/validators';
 import { GeoFireXService } from 'src/app/utils/geofirex.service';
 import { Keywords } from 'src/app/utils/keywords';
 import { FuelTypesService } from 'src/app/services/fuel-types.service';
@@ -27,7 +27,7 @@ export class StationsFormComponent implements OnInit, OnDestroy {
         city: new FormControl(''),
         street: new FormControl(''),
         zip: new FormControl(''),
-        fuelTypesArray: new FormArray([])
+        fuelTypesArray: new FormArray([], FormArrayValidator.atLeastOneIsTrue)
     });
 
     fuelTypes: FuelType[];
@@ -114,9 +114,9 @@ export class StationsFormComponent implements OnInit, OnDestroy {
             position: pos,
             address: {
                 country: this.inputForm.controls.country.value.id,
-                city: this.inputForm.controls.city.value.toString(),
-                street: this.inputForm.controls.street.value.toString(),
-                zip: this.inputForm.controls.zip.value.toString()
+                city: this.inputForm.controls.city.value?.toString(),
+                street: this.inputForm.controls.street.value?.toString(),
+                zip: this.inputForm.controls.zip.value?.toString()
             },
             keywords: Keywords.generateKeywords([this.inputForm.controls.name.value.toString(),
                 this.inputForm.controls.city.value.toString()])
@@ -127,7 +127,7 @@ export class StationsFormComponent implements OnInit, OnDestroy {
             console.log(index + ' ' + control.value + ' ' + this.fuelTypes[index].id);
             if (control.value) {
                 fuels.push(this.fuelTypes[index].id);
-                prices[this.fuelTypes[index].id] = 0;
+                prices[this.fuelTypes[index].id] = { price: 0, date: new Date().toISOString() };
             }
         });
         newStation.fuels = fuels;

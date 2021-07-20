@@ -33,7 +33,7 @@ export class MapService {
                         return this.firestore.geoCollection$(this.geoFireXService.geoFireClient.point(position.lat, position.lng), mapFilter.range, 'position').pipe(
                             tap((stations) => {
                                 this.store.patch({
-                                    stations,
+                                    stations
                                 }, 'map stations geoCollection subscription');
                             })
                         );
@@ -86,6 +86,14 @@ export class MapService {
         );
     }
 
+    get createdStation$(): Observable<Station> {
+        return this.store.state$.pipe(
+            map(state => state.createdStation),
+            filter((station: Station) => !!station),
+            distinctUntilChanged()
+        );
+    }
+
     create(station: Station) {
         this.indexedDBService.isActivityAllowed(Activity.CREATE_NEW_STATION,
             environment.activityLimits.createNewStation.maxAttempts,
@@ -96,17 +104,22 @@ export class MapService {
                     if (result) {
                         this.store.patch({
                         }, 'station create');
-                        return this.firestore.create(station).then(_ => {
+                        return this.firestore.create(station).then((newStation) => {
                             this.store.patch({
+                                createdStation: newStation
                             }, 'station create SUCCESS');
                             this.indexedDBService.logActivity(Activity.CREATE_NEW_STATION, environment.activityLimits.createNewStation.maxAttempts);
                         }).catch(err => {
                             this.store.patch({
                             }, 'station create ERROR');
+                        }).finally(() => {
+                            this.store.patch({
+                                createdStation: null
+                            }, 'station create FINALLY');
                         });
                     } else {
-                        this.matSnackBar.open('Create new station limit exceeded', null, {
-                            duration: 2000,
+                        this.matSnackBar.open('Create new station daily limit exceeded', null, {
+                            duration: 3000,
                         });
                     }
                 });
@@ -114,13 +127,32 @@ export class MapService {
         );
     }
 
-    delete(id: string): any {
-        this.store.patch({
-        }, 'station delete');
-        return this.firestore.delete(id).catch(err => {
-            this.store.patch({
-            }, 'station delete ERROR');
-        });
+    delete(id: string) {
+        this.indexedDBService.isActivityAllowed(Activity.DELETE_STATION,
+            environment.activityLimits.deleteStation.maxAttempts,
+            environment.activityLimits.deleteStation.period).then(
+            (result) => {
+                this.ngZone.run(() => {
+                    console.log(result);
+                    if (result) {
+                        this.store.patch({
+                        }, 'station delete');
+                        return this.firestore.delete(id).then(() => {
+                            this.store.patch({
+                            }, 'station delete SUCCESS');
+                            this.indexedDBService.logActivity(Activity.DELETE_STATION, environment.activityLimits.deleteStation.maxAttempts);
+                        }).catch(err => {
+                            this.store.patch({
+                            }, 'station delete ERROR');
+                        });
+                    } else {
+                        this.matSnackBar.open('Delete station daily limit exceeded', null, {
+                            duration: 3000,
+                        });
+                    }
+                });
+            }
+        );
     }
 
     setMapCenter(center: google.maps.LatLngLiteral) {

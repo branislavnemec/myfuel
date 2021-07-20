@@ -9,4 +9,6 @@ export interface MapPage {
     mapZoom: number;
     position: google.maps.LatLngLiteral;
     circleDraggable: boolean;
+    createdStation: Station;
+
 }

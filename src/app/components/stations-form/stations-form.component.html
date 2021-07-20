@@ -53,7 +53,7 @@
         </mat-card-content>
 
         <mat-card-actions>
-            <button mat-button type="submit" [disabled]="inputForm.invalid">Add</button>
+            <button mat-raised-button color="primary" type="submit" [disabled]="inputForm.invalid">Add</button>
         </mat-card-actions>
     </mat-card>
     <span>{{ formStatus$ | async }}</span>

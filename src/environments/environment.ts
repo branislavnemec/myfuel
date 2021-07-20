@@ -16,7 +16,15 @@ export const environment = {
     activityLimits: {
         createNewStation: {
             maxAttempts: 2,
-            period: 1 * 24 * 60 * 60 * 1000
+            period: 1 * 2 * 60 * 60 * 1000
+        },
+        deleteStation: {
+            maxAttempts: 2,
+            period: 1 * 2 * 60 * 60 * 1000
+        },
+        updateStation: {
+            maxAttempts: 2,
+            period: 1 * 2 * 60 * 60 * 1000
         }
     }
 };

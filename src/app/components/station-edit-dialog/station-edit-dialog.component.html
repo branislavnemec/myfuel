@@ -47,6 +47,6 @@
 </mat-dialog-content>
 
 <mat-dialog-actions>
-    <button class="mat-raised-button" (click)="close()">Close</button>
-    <button class="mat-raised-button mat-primary" [disabled]="inputForm.invalid" (click)="submit()">Save</button>
+    <button mat-raised-button (click)="close()">Close</button>
+    <button mat-raised-button color="primary" [disabled]="inputForm.invalid" (click)="submit()">Save</button>
 </mat-dialog-actions>
