@@ -8,6 +8,7 @@ export class GeoFireXService {
     geoFireClient: geofirex.GeoFireClient = geofirex.init(firebase);
 
     constructor() {
+        console.log(this.geoFireClient);
     }
 
 }

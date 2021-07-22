@@ -34,6 +34,14 @@
             "scripts": []
           },
           "configurations": {
+            "dev": {
+              "aot": false,
+              "buildOptimizer": false,
+              "sourceMap": true,
+              "optimization": false,
+              "namedChunks": true,
+              "vendorChunk": true
+            },
             "production": {
               "fileReplacements": [
                 {
@@ -41,10 +49,10 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
+              "aot": true,
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": false,
@@ -70,6 +78,9 @@
             "browserTarget": "myfuel:build"
           },
           "configurations": {
+            "dev": {
+              "browserTarget": "myfuel:build:dev"
+            },
             "production": {
               "browserTarget": "myfuel:build:production"
             }

@@ -1,4 +1,5 @@
-ng build --prod=true --aot=true --baseHref=./
+ng serve --configuration dev
+ng build --configuration production --baseHref=./
 
 cordova platform add android
 cordova run android
