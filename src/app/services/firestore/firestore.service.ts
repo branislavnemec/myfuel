@@ -17,7 +17,6 @@ export abstract class FirestoreService<T> {
         protected angularFireAuth: AngularFireAuth,
         protected geoFireXService: GeoFireXService
     ) {
-        this.angularFireAuth.signInAnonymously();
     }
 
     doc$(id: string): Observable<T> {
