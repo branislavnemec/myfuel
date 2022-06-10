@@ -1,5 +1,5 @@
 import * as firebase from 'firebase/app';
-import * as geofirex from 'geofirex';
+import * as geofirex from '@bagtilan/geofirex';
 import { Injectable } from '@angular/core';
 
 @Injectable()

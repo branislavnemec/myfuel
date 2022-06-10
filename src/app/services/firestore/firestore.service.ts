@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { tap, distinctUntilChanged } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { GeoFireXService } from '../../utils/geofirex.service';
-import * as geofirex from 'geofirex';
+import * as geofirex from '@bagtilan/geofirex';
 
 @Injectable()
 export abstract class FirestoreService<T> {
